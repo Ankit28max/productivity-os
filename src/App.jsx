@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { SidebarProvider } from './context/SidebarContext';
+import { TaskProvider } from './context/TaskContext';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
@@ -9,32 +10,36 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <SidebarProvider>
-          <AppRoutes />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: '#1e1e2e',
-                color: '#f8fafc',
-                border: '1px solid #334155',
-                borderRadius: '12px',
-                fontSize: '14px',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#f8fafc',
+          <TaskProvider>
+            <AppRoutes />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: 'rgba(19, 19, 43, 0.85)',
+                  backdropFilter: 'blur(12px)',
+                  color: '#f0f0ff',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '16px',
+                  fontSize: '14px',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
                 },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#f8fafc',
+                success: {
+                  iconTheme: {
+                    primary: '#06b6d4',
+                    secondary: '#f0f0ff',
+                  },
                 },
-              },
-            }}
-          />
+                error: {
+                  iconTheme: {
+                    primary: '#f43f5e',
+                    secondary: '#f0f0ff',
+                  },
+                },
+              }}
+            />
+          </TaskProvider>
         </SidebarProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -63,28 +63,30 @@ export default function Sidebar() {
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="flex items-center justify-between px-5 h-16 shrink-0">
+      <div className="flex items-center justify-between px-4 h-16 shrink-0 border-b border-white/[0.04]">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
-            <HiOutlineSparkles className="h-4.5 w-4.5 text-white" />
+          <div className="h-9 w-9 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary-600/20">
+            <HiOutlineSparkles className="h-5 w-5 text-white" />
           </div>
           <AnimatePresence>
             {(isOpen || isMobileOpen) && (
-              <motion.span
+              <motion.div
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: 'auto' }}
                 exit={{ opacity: 0, width: 0 }}
-                className="font-bold text-base text-text-primary whitespace-nowrap overflow-hidden"
+                className="overflow-hidden"
               >
-                ProductivityOS
-              </motion.span>
+                <span className="font-bold text-[15px] text-text-primary whitespace-nowrap tracking-tight">
+                  Productivity<span className="text-primary-400">OS</span>
+                </span>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
         {isMobile && isMobileOpen && (
           <button
             onClick={closeMobile}
-            className="p-1.5 rounded-lg hover:bg-surface-700 text-text-tertiary hover:text-text-primary transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/5 text-text-tertiary hover:text-text-primary transition-colors"
           >
             <HiOutlineX className="h-5 w-5" />
           </button>
@@ -92,11 +94,11 @@ export default function Sidebar() {
         {!isMobile && (
           <button
             onClick={toggle}
-            className="p-1.5 rounded-lg hover:bg-surface-700 text-text-tertiary hover:text-text-primary transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/5 text-text-tertiary hover:text-text-primary transition-colors"
           >
             <HiOutlineChevronLeft
               className={cn(
-                'h-4 w-4 transition-transform duration-200',
+                'h-4 w-4 transition-transform duration-250',
                 !isOpen && 'rotate-180'
               )}
             />
@@ -105,7 +107,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-6">
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
         {navSections.map((section) => (
           <div key={section.title}>
             <AnimatePresence>
@@ -114,7 +116,7 @@ export default function Sidebar() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted"
+                  className="px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-text-muted"
                 >
                   {section.title}
                 </motion.p>
@@ -134,23 +136,27 @@ export default function Sidebar() {
                       to={item.path}
                       onClick={() => isMobile && closeMobile()}
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group relative',
+                        'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative',
                         isActive
-                          ? 'bg-primary-600/15 text-primary-400'
-                          : 'text-text-secondary hover:bg-surface-700 hover:text-text-primary'
+                          ? 'bg-primary-500/10 text-primary-400'
+                          : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary'
                       )}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="activeNav"
-                          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary-500"
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                          style={{
+                            background: 'linear-gradient(180deg, #22d3ee, #a855f7)',
+                            boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)',
+                          }}
+                          transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                         />
                       )}
                       <Icon
                         className={cn(
-                          'h-5 w-5 shrink-0',
-                          isActive ? 'text-primary-400' : 'text-text-tertiary group-hover:text-text-secondary'
+                          'h-[18px] w-[18px] shrink-0 transition-colors duration-200',
+                          isActive ? 'text-primary-400' : 'text-text-muted group-hover:text-text-secondary'
                         )}
                       />
                       <AnimatePresence>
@@ -174,19 +180,19 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Bottom Section - User & Settings */}
-      <div className="shrink-0 border-t border-border-default px-3 py-3 space-y-1">
+      {/* Bottom Section */}
+      <div className="shrink-0 border-t border-white/[0.04] px-3 py-3 space-y-0.5">
         <NavLink
           to={ROUTES.SETTINGS}
           onClick={() => isMobile && closeMobile()}
           className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+            'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
             location.pathname === ROUTES.SETTINGS
-              ? 'bg-primary-600/15 text-primary-400'
-              : 'text-text-secondary hover:bg-surface-700 hover:text-text-primary'
+              ? 'bg-primary-500/10 text-primary-400'
+              : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary'
           )}
         >
-          <HiOutlineCog className="h-5 w-5 shrink-0 text-text-tertiary" />
+          <HiOutlineCog className="h-[18px] w-[18px] shrink-0 text-text-muted" />
           <AnimatePresence>
             {(isOpen || isMobileOpen) && (
               <motion.span
@@ -203,9 +209,9 @@ export default function Sidebar() {
 
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-danger-600/15 hover:text-danger-400 transition-all duration-200 w-full"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-text-secondary hover:bg-danger-500/8 hover:text-danger-400 transition-all duration-200 w-full"
         >
-          <HiOutlineLogout className="h-5 w-5 shrink-0 text-text-tertiary" />
+          <HiOutlineLogout className="h-[18px] w-[18px] shrink-0 text-text-muted" />
           <AnimatePresence>
             {(isOpen || isMobileOpen) && (
               <motion.span
@@ -227,14 +233,14 @@ export default function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-3 px-3 py-2.5 mt-2 rounded-lg bg-surface-800 border border-border-default"
+              className="flex items-center gap-3 px-3 py-3 mt-2 rounded-xl glass-input"
             >
               <Avatar name={user?.name} size="sm" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-text-primary truncate">
+                <p className="text-[13px] font-medium text-text-primary truncate">
                   {user?.name}
                 </p>
-                <p className="text-[11px] text-text-tertiary truncate">
+                <p className="text-[11px] text-text-muted truncate">
                   {user?.email}
                 </p>
               </div>
@@ -250,9 +256,9 @@ export default function Sidebar() {
       {/* Desktop Sidebar */}
       {!isMobile && (
         <motion.aside
-          animate={{ width: isOpen ? 280 : 72 }}
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
-          className="fixed top-0 left-0 h-screen bg-surface-900 border-r border-border-default z-40 overflow-hidden"
+          animate={{ width: isOpen ? 260 : 72 }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
+          className="fixed top-0 left-0 h-screen glass-surface border-r border-white/[0.04] z-40 overflow-hidden"
         >
           {sidebarContent}
         </motion.aside>
@@ -267,14 +273,14 @@ export default function Sidebar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeMobile}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
             />
             <motion.aside
-              initial={{ x: -280 }}
+              initial={{ x: -260 }}
               animate={{ x: 0 }}
-              exit={{ x: -280 }}
+              exit={{ x: -260 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed top-0 left-0 h-screen w-[280px] bg-surface-900 border-r border-border-default z-50 overflow-hidden"
+              className="fixed top-0 left-0 h-screen w-[260px] glass-surface border-r border-white/[0.04] z-50 overflow-hidden"
             >
               {sidebarContent}
             </motion.aside>

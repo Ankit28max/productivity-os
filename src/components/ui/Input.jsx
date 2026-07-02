@@ -20,9 +20,9 @@ const Input = forwardRef(function Input(
           {label}
         </label>
       )}
-      <div className="relative">
+      <div className="relative group">
         {Icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary-400 transition-colors duration-200">
             <Icon className="h-4 w-4" />
           </div>
         )}
@@ -30,20 +30,24 @@ const Input = forwardRef(function Input(
           ref={ref}
           type={type}
           className={cn(
-            'w-full rounded-lg bg-surface-800 border border-border-default px-3.5 py-2.5 text-sm text-text-primary',
+            'w-full rounded-xl glass-input px-4 py-3 text-sm text-text-primary',
             'placeholder:text-text-muted',
-            'transition-all duration-200',
-            'hover:border-border-subtle',
-            'focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30',
-            Icon && 'pl-10',
-            error && 'border-danger-500 focus:border-danger-500 focus:ring-danger-500/30',
+            'transition-all duration-250',
+            'hover:border-white/12',
+            'focus:outline-none focus:border-primary-500/40 focus:ring-1 focus:ring-primary-500/20',
+            'focus:shadow-[0_0_20px_rgba(6,182,212,0.06)]',
+            Icon && 'pl-11',
+            error && 'border-danger-500/40 focus:border-danger-500/50 focus:ring-danger-500/20',
             className
           )}
           {...props}
         />
       </div>
       {error && (
-        <p className="text-xs text-danger-400 mt-0.5">{error}</p>
+        <p className="text-xs text-danger-400 mt-0.5 flex items-center gap-1">
+          <span className="inline-block h-1 w-1 rounded-full bg-danger-400" />
+          {error}
+        </p>
       )}
     </div>
   );

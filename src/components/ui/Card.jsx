@@ -1,16 +1,19 @@
 import { cn } from '../../utils/cn';
 
 const variantStyles = {
-  default: 'bg-surface-800 border-border-default',
+  default: 'glass-card',
   glass: 'glass',
-  gradient: 'gradient-primary border-0',
-  elevated: 'bg-surface-800 border-border-default shadow-lg shadow-black/20',
+  surface: 'glass-surface',
+  elevated: 'glass-card shadow-xl shadow-black/30',
+  gradient: 'gradient-primary border-0 shadow-lg shadow-primary-600/20',
+  neon: 'glass-card gradient-glow-border',
 };
 
 export default function Card({
   children,
   variant = 'default',
   hover = false,
+  glow,
   padding = 'md',
   className,
   ...props
@@ -23,13 +26,20 @@ export default function Card({
     xl: 'p-8',
   };
 
+  const glowStyles = {
+    cyan: 'card-glow-cyan',
+    violet: 'card-glow-violet',
+    lime: 'card-glow-lime',
+  };
+
   return (
     <div
       className={cn(
-        'rounded-xl border transition-all duration-200',
+        'rounded-2xl transition-all duration-250',
         variantStyles[variant],
         paddingStyles[padding],
         hover && 'card-hover cursor-pointer',
+        glow && glowStyles[glow],
         className
       )}
       {...props}

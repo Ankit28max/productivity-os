@@ -5,9 +5,9 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 
 const MODES = [
-  { label: 'Focus', minutes: 25, color: 'primary' },
-  { label: 'Short Break', minutes: 5, color: 'accent' },
-  { label: 'Long Break', minutes: 15, color: 'secondary' },
+  { label: 'Focus', minutes: 25, color: 'cyan' },
+  { label: 'Short Break', minutes: 5, color: 'lime' },
+  { label: 'Long Break', minutes: 15, color: 'violet' },
 ];
 
 export default function PomodoroPage() {
@@ -59,9 +59,9 @@ export default function PomodoroPage() {
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   const colorMap = {
-    primary: { stroke: '#6366f1', glow: 'shadow-primary-500/20' },
-    accent: { stroke: '#10b981', glow: 'shadow-accent-500/20' },
-    secondary: { stroke: '#a855f7', glow: 'shadow-secondary-500/20' },
+    cyan: { stroke: '#06b6d4', bg: 'rgba(6, 182, 212, 0.04)', glow: 'rgba(6, 182, 212, 0.3)' },
+    lime: { stroke: '#84cc16', bg: 'rgba(132, 204, 22, 0.04)', glow: 'rgba(132, 204, 22, 0.3)' },
+    violet: { stroke: '#a855f7', bg: 'rgba(168, 85, 247, 0.04)', glow: 'rgba(168, 85, 247, 0.3)' },
   };
 
   return (
@@ -69,23 +69,23 @@ export default function PomodoroPage() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="max-w-2xl mx-auto"
+      className="max-w-2xl mx-auto space-y-6"
     >
-      <div className="text-center mb-6">
+      <div className="text-center">
         <h1 className="text-xl font-bold text-text-primary">Pomodoro Timer</h1>
         <p className="text-sm text-text-secondary mt-0.5">Stay focused with timed work sessions</p>
       </div>
 
       {/* Mode Selector */}
-      <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center justify-center gap-2">
         {MODES.map((m, i) => (
           <button
             key={m.label}
             onClick={() => handleModeChange(i)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
               i === modeIndex
-                ? 'bg-primary-600/15 text-primary-400'
-                : 'text-text-secondary hover:bg-surface-700 hover:text-text-primary'
+                ? 'bg-primary-500/10 text-primary-400 border border-primary-500/20 shadow-[0_0_15px_rgba(6,182,212,0.06)]'
+                : 'text-text-secondary border border-transparent hover:bg-white/[0.03] hover:text-text-primary'
             }`}
           >
             {m.label}
@@ -94,13 +94,16 @@ export default function PomodoroPage() {
       </div>
 
       {/* Timer */}
-      <Card className="flex flex-col items-center py-10">
-        <div className="relative mb-8">
+      <Card className="flex flex-col items-center py-12 relative overflow-hidden" variant="neon">
+        <div className="absolute inset-0 pointer-events-none opacity-30 blur-[60px]" style={{
+          background: `radial-gradient(circle, ${colorMap[mode.color].glow} 0%, transparent 65%)`
+        }} />
+        <div className="relative mb-10">
           <svg width="280" height="280" viewBox="0 0 280 280">
             <circle
               cx="140" cy="140" r="120"
               fill="none"
-              stroke="#1e293b"
+              stroke="rgba(255, 255, 255, 0.03)"
               strokeWidth="8"
             />
             <circle
@@ -113,22 +116,24 @@ export default function PomodoroPage() {
               strokeDashoffset={strokeDashoffset}
               transform="rotate(-90 140 140)"
               className="transition-all duration-1000 ease-linear"
+              style={{ filter: `drop-shadow(0 0 8px ${colorMap[mode.color].stroke}80)` }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-5xl font-bold text-text-primary tabular-nums">
+            <span className="text-5xl font-bold text-text-primary tabular-nums tracking-tight">
               {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
             </span>
-            <span className="text-sm text-text-secondary mt-1">{mode.label}</span>
+            <span className="text-xs font-semibold text-text-muted mt-2 uppercase tracking-widest">{mode.label}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 relative z-10">
           <Button
-            variant={isRunning ? 'secondary' : 'primary'}
+            variant={isRunning ? 'secondary' : 'neon'}
             size="lg"
             icon={isRunning ? HiOutlinePause : HiOutlinePlay}
             onClick={() => setIsRunning(!isRunning)}
+            className="w-32"
           >
             {isRunning ? 'Pause' : 'Start'}
           </Button>
@@ -139,18 +144,18 @@ export default function PomodoroPage() {
       </Card>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mt-6">
-        <Card className="text-center">
+      <div className="grid grid-cols-3 gap-4">
+        <Card className="text-center hover:border-primary-500/20 transition-all duration-300" hover>
           <p className="text-2xl font-bold text-primary-400">{sessions}</p>
-          <p className="text-xs text-text-secondary mt-1">Sessions Today</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">Sessions Today</p>
         </Card>
-        <Card className="text-center">
+        <Card className="text-center hover:border-accent-500/20 transition-all duration-300" hover>
           <p className="text-2xl font-bold text-accent-400">{Math.round(sessions * 25 / 60 * 10) / 10}h</p>
-          <p className="text-xs text-text-secondary mt-1">Focus Time</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">Focus Time</p>
         </Card>
-        <Card className="text-center">
-          <p className="text-2xl font-bold text-warning-400">🔥</p>
-          <p className="text-xs text-text-secondary mt-1">Keep Going!</p>
+        <Card className="text-center hover:border-secondary-500/20 transition-all duration-300" hover>
+          <p className="text-2xl font-bold text-secondary-400">🔥</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">Daily Streak</p>
         </Card>
       </div>
     </motion.div>

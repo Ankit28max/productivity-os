@@ -8,13 +8,13 @@ export default function DashboardLayout() {
   const { isOpen, isMobile } = useSidebar();
 
   return (
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-dark-950 ambient-bg">
       <Sidebar />
       <Navbar />
       <main
         className={cn(
-          'pt-16 min-h-screen transition-all duration-200',
-          !isMobile && isOpen ? 'ml-[280px]' : !isMobile ? 'ml-[72px]' : 'ml-0'
+          'relative z-10 pt-16 min-h-screen transition-all duration-250',
+          !isMobile && isOpen ? 'ml-[260px]' : !isMobile ? 'ml-[72px]' : 'ml-0'
         )}
       >
         <div className="p-4 md:p-6 lg:p-8">
