@@ -22,6 +22,7 @@ import {
   Bar,
 } from 'recharts';
 import { useTasks } from '../context/TaskContext';
+import { useHabits } from '../context/HabitContext';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { useAuth } from '../context/AuthContext';
@@ -47,12 +48,7 @@ const focusData = [
   { day: 'Sun', hours: 4.8 },
 ];
 
-const habits = [
-  { name: 'Morning Exercise', streak: 12, completed: true, icon: '🏃' },
-  { name: 'Read 30 mins', streak: 8, completed: false, icon: '📚' },
-  { name: 'Meditate', streak: 21, completed: true, icon: '🧘' },
-  { name: 'Journal', streak: 5, completed: false, icon: '📝' },
-];
+
 
 const recentActivity = [
   { action: 'Completed task', detail: 'Design system components', time: '2m ago', icon: HiOutlineCheckCircle, color: 'text-accent-400' },
@@ -94,12 +90,15 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function DashboardPage() {
   const { user } = useAuth();
   const { tasks } = useTasks();
+  const { habits, getStreak, toggleHabitCheckIn } = useHabits();
 
   // Dynamic calculations
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.status === 'completed');
   const completedCount = completedTasks.length;
   const productivityScore = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+
+  const bestStreak = habits.length > 0 ? Math.max(...habits.map((h) => getStreak(h))) : 0;
 
   const todayStr = new Date().toISOString().split('T')[0];
   const todayTasksList = tasks
@@ -119,8 +118,8 @@ export default function DashboardPage() {
     },
     {
       label: 'Active Streak',
-      value: '12 days',
-      change: '+3',
+      value: `${bestStreak} days`,
+      change: 'Best',
       positive: true,
       icon: HiOutlineFire,
       color: 'text-warning-400',
@@ -140,7 +139,7 @@ export default function DashboardPage() {
     {
       label: 'Productivity',
       value: `${productivityScore}%`,
-      change: '+5%',
+      change: 'Score',
       positive: true,
       icon: HiOutlineTrendingUp,
       color: 'text-secondary-400',
@@ -265,26 +264,38 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="space-y-2.5">
-              {habits.map((habit) => (
-                <div key={habit.name} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors">
-                  <span className="text-lg">{habit.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-text-primary">{habit.name}</p>
-                    <p className="text-[11px] text-text-muted">{habit.streak} day streak 🔥</p>
-                  </div>
-                  <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                    habit.completed
-                      ? 'bg-accent-500 border-accent-500 shadow-[0_0_10px_rgba(163,230,53,0.2)]'
-                      : 'border-text-muted/40 hover:border-text-secondary'
-                  }`}>
-                    {habit.completed && (
-                      <svg className="h-3 w-3 text-dark-950" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-              ))}
+              {habits.length === 0 ? (
+                <p className="text-xs text-text-muted py-4 text-center">No habits tracked yet.</p>
+              ) : (
+                habits.slice(0, 4).map((habit) => {
+                  const isCompleted = habit.history.includes(todayStr);
+                  const streak = getStreak(habit);
+
+                  return (
+                    <div key={habit.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors">
+                      <span className="text-lg">{habit.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-text-primary">{habit.name}</p>
+                        <p className="text-[11px] text-text-muted">{streak} day streak 🔥</p>
+                      </div>
+                      <button
+                        onClick={() => toggleHabitCheckIn(habit.id, todayStr)}
+                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer ${
+                          isCompleted
+                            ? 'bg-accent-500 border-accent-500 shadow-[0_0_10px_rgba(163,230,53,0.2)]'
+                            : 'border-text-muted/40 hover:border-text-secondary'
+                        }`}
+                      >
+                        {isCompleted && (
+                          <svg className="h-3 w-3 text-dark-950" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </Card>
         </motion.div>
