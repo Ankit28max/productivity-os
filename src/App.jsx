@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { SidebarProvider } from './context/SidebarContext';
 import { TaskProvider } from './context/TaskContext';
 import { NoteProvider } from './context/NoteContext';
+import { HabitProvider } from './context/HabitContext';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
@@ -13,7 +14,9 @@ export default function App() {
         <SidebarProvider>
           <TaskProvider>
             <NoteProvider>
-              <AppRoutes />
+              <HabitProvider>
+                <AppRoutes />
+              </HabitProvider>
             </NoteProvider>
             <Toaster
               position="top-right"
