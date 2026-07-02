@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { SidebarProvider } from './context/SidebarContext';
 import { TaskProvider } from './context/TaskContext';
+import { NoteProvider } from './context/NoteContext';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
@@ -11,7 +12,9 @@ export default function App() {
       <AuthProvider>
         <SidebarProvider>
           <TaskProvider>
-            <AppRoutes />
+            <NoteProvider>
+              <AppRoutes />
+            </NoteProvider>
             <Toaster
               position="top-right"
               toastOptions={{
