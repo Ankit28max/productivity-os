@@ -184,15 +184,24 @@ export default function LandingPage() {
           <div className="flex items-center gap-4 pt-2">
             <button
               onClick={handleLaunchApp}
-              className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-primary-500 hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/20 flex items-center gap-1.5 cursor-pointer"
+              className="relative overflow-hidden px-6 py-3 rounded-full text-xs font-bold text-white cursor-pointer group"
+              style={{
+                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                boxShadow: '0 0 30px rgba(234,88,12,0.35)',
+              }}
             >
-              Start Tracking
+              {/* Shimmer sweep */}
+              <span className="absolute inset-0 w-full h-full translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <span className="relative flex items-center gap-2">
+                <HiOutlineSparkles className="h-3.5 w-3.5" />
+                Start Tracking
+              </span>
             </button>
             <button
               onClick={handleLaunchApp}
-              className="px-5 py-2.5 rounded-full text-xs font-bold text-text-primary bg-surface-800/60 border border-border-subtle hover:bg-surface-700/60 transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-3 rounded-full text-xs font-bold text-text-primary bg-surface-800/60 border border-border-subtle hover:bg-surface-700/60 hover:border-orange-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              Explore Workspace
+              Explore Workspace →
             </button>
           </div>
         </div>
@@ -292,6 +301,82 @@ export default function LandingPage() {
               <span className="text-[9px] font-bold text-text-secondary tracking-wide uppercase">Active Users - 384 online</span>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Section 1.5: Features Grid */}
+      <section className="max-w-6xl mx-auto px-6 py-16 relative z-10">
+        <div className="text-center mb-12 space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+            <HiOutlineSparkles className="h-3 w-3" />
+            Everything you need
+          </div>
+          <h2 className="text-2xl md:text-4xl font-extrabold text-text-primary tracking-tight">
+            Built for <span className="gradient-text">deep work</span> believers
+          </h2>
+          <p className="text-sm text-text-secondary max-w-xl mx-auto leading-relaxed">
+            Every tool is wired together — your habits feed your streaks, your tasks feed your analytics, and your AI coach feeds on all of it.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            {
+              icon: '⚡',
+              title: 'Task Intelligence',
+              desc: 'Categorize, prioritize, and schedule tasks with deadline tracking and priority queues.',
+              color: 'from-orange-500/10 to-transparent',
+              border: 'hover:border-orange-500/30',
+            },
+            {
+              icon: '🔥',
+              title: 'Streak Engine',
+              desc: 'Daily habit check-ins with auto-streak calculation and visual consistency heatmaps.',
+              color: 'from-amber-500/10 to-transparent',
+              border: 'hover:border-amber-500/30',
+            },
+            {
+              icon: '🎯',
+              title: 'Goal Milestones',
+              desc: 'Break long-term goals into trackable milestones with progress bars and XP rewards.',
+              color: 'from-violet-500/10 to-transparent',
+              border: 'hover:border-violet-500/30',
+            },
+            {
+              icon: '🤖',
+              title: 'AI Coach (Gemini)',
+              desc: 'Ask your AI for productivity advice, note summaries, goal coaching, and daily plans.',
+              color: 'from-cyan-500/10 to-transparent',
+              border: 'hover:border-cyan-500/30',
+            },
+            {
+              icon: '⏱️',
+              title: 'Pomodoro Timer',
+              desc: 'Focus sessions with configurable intervals, break alerts, and session logging.',
+              color: 'from-lime-500/10 to-transparent',
+              border: 'hover:border-lime-500/30',
+            },
+            {
+              icon: '📊',
+              title: 'Analytics Dashboard',
+              desc: 'Weekly charts, completion rates, focus hour trends, and performance radar scores.',
+              color: 'from-pink-500/10 to-transparent',
+              border: 'hover:border-pink-500/30',
+            },
+          ].map((feature, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+              className={`p-5 rounded-2xl bg-gradient-to-br ${feature.color} border border-border-default ${feature.border} transition-all duration-300 group`}
+            >
+              <div className="text-2xl mb-3">{feature.icon}</div>
+              <h3 className="text-sm font-bold text-text-primary mb-1.5">{feature.title}</h3>
+              <p className="text-[11px] text-text-secondary leading-relaxed">{feature.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 

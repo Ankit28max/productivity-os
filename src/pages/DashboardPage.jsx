@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   HiOutlineClipboardList,
@@ -6,8 +7,11 @@ import {
   HiOutlineChartBar,
   HiOutlineCalendar,
   HiOutlineLightningBolt,
-  HiOutlineArrowRight,
   HiOutlineTrendingUp,
+  HiOutlineSparkles,
+  HiOutlineBookOpen,
+  HiOutlineCheckCircle,
+  HiOutlineChip,
 } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import {
@@ -19,10 +23,13 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  ReferenceLine,
 } from 'recharts';
 import { useTasks } from '../context/TaskContext';
 import { useHabits } from '../context/HabitContext';
+import { useGoals } from '../context/GoalContext';
 import Card from '../components/ui/Card';
+import StatCard from '../components/ui/StatCard';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
@@ -49,19 +56,21 @@ const focusData = [
 ];
 
 const recentActivity = [
-  { action: 'Completed task', detail: 'Design system components', time: '2m ago', icon: HiOutlineCheckCircle, color: 'text-accent-400' },
-  { action: 'Focus session', detail: '25 min Pomodoro', time: '15m ago', icon: HiOutlineClock, color: 'text-primary-400' },
-  { action: 'New note', detail: 'Meeting notes – Q3 Planning', time: '1h ago', icon: HiOutlineClipboardList, color: 'text-secondary-400' },
-  { action: 'Habit done', detail: 'Morning Exercise', time: '3h ago', icon: HiOutlineFire, color: 'text-warning-400' },
+  { action: 'TASK', detail: 'Completed "Design system components"', time: '2m ago', color: 'text-lime-400' },
+  { action: 'FOCUS', detail: '25 min Pomodoro session ended', time: '15m ago', color: 'text-cyan-400' },
+  { action: 'NOTE', detail: 'Created "Meeting notes – Q3 Planning"', time: '1h ago', color: 'text-violet-400' },
+  { action: 'HABIT', detail: 'Morning Exercise check-in recorded', time: '3h ago', color: 'text-amber-400' },
+  { action: 'GOAL', detail: 'Milestone "Build API layer" marked done', time: '5h ago', color: 'text-orange-400' },
 ];
 
-function HiOutlineCheckCircle(props) {
-  return (
-    <svg fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  );
-}
+const quickLinks = [
+  { label: 'Tasks', to: '/tasks', icon: HiOutlineClipboardList, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+  { label: 'Habits', to: '/habits', icon: HiOutlineFire, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  { label: 'Goals', to: '/goals', icon: HiOutlineTrendingUp, color: 'text-violet-400', bg: 'bg-violet-500/10' },
+  { label: 'Notes', to: '/notes', icon: HiOutlineBookOpen, color: 'text-lime-400', bg: 'bg-lime-500/10' },
+  { label: 'Focus', to: '/pomodoro', icon: HiOutlineClock, color: 'text-orange-400', bg: 'bg-orange-500/10' },
+  { label: 'AI Coach', to: '/ai', icon: HiOutlineSparkles, color: 'text-pink-400', bg: 'bg-pink-500/10' },
+];
 
 const priorityMap = {
   high: { color: 'red', label: 'High' },
@@ -72,10 +81,10 @@ const priorityMap = {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass-card rounded-xl px-3.5 py-2.5">
-      <p className="text-[11px] text-text-muted mb-1 font-medium">{label}</p>
+    <div className="glass-card rounded-xl px-3.5 py-2.5 border border-border-default">
+      <p className="text-[11px] text-text-muted mb-1.5 font-bold uppercase tracking-wider">{label}</p>
       {payload.map((entry, i) => (
-        <p key={i} className="text-sm font-semibold" style={{ color: entry.color }}>
+        <p key={i} className="text-sm font-bold" style={{ color: entry.color }}>
           {entry.name}: {entry.value}
         </p>
       ))}
@@ -83,24 +92,35 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
+function LiveClock() {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="text-[10px] font-mono text-text-muted tabular-nums">
+      {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+    </span>
+  );
+}
+
 export default function DashboardPage() {
   const { user } = useAuth();
   const { tasks } = useTasks();
   const { habits, getStreak, toggleHabitCheckIn } = useHabits();
+  const { goals } = useGoals();
 
-  // Dynamic calculations
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.status === 'completed');
   const completedCount = completedTasks.length;
   const productivityScore = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
-
   const bestStreak = habits.length > 0 ? Math.max(...habits.map((h) => getStreak(h))) : 0;
+  const totalGoals = goals.length;
+  const activeGoals = goals.filter(g => g.milestones && !g.milestones.every(m => m.completed)).length;
 
   const todayStr = new Date().toISOString().split('T')[0];
-  const todayTasksList = tasks
-    .filter((t) => t.dueDate === todayStr)
-    .slice(0, 4);
-
+  const todayTasksList = tasks.filter((t) => t.dueDate === todayStr).slice(0, 4);
   const pendingTodayCount = todayTasksList.filter(t => t.status !== 'completed').length;
 
   return (
@@ -110,32 +130,54 @@ export default function DashboardPage() {
       transition={{ duration: 0.4 }}
       className="space-y-6 max-w-[1400px]"
     >
-      {/* Dynamic Console Banner */}
+      {/* ── Welcome Banner ── */}
       <Card variant="neon" className="relative overflow-hidden p-6">
-        <div className="absolute top-0 right-0 w-80 h-80 rounded-full blur-[100px] opacity-25"
-          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15), transparent 70%)' }}
-        />
-        <div className="absolute bottom-0 left-0 w-60 h-60 rounded-full blur-[80px] opacity-15"
-          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15), transparent 70%)' }}
-        />
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
+        {/* Animated gradient mesh blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(234,88,12,0.3), transparent 70%)' }} />
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full blur-[80px] opacity-15 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.25), transparent 70%)' }} />
+        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-[60px] opacity-10 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.2), transparent 70%)' }} />
+
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="flex-1">
+            <div className="flex items-center gap-2.5 mb-2">
               <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{getGreeting()}</span>
-              <span className="h-1 w-1 rounded-full bg-primary-400" />
-              <span className="text-[10px] font-bold text-primary-400 tracking-wider">SYSTEM ONLINE</span>
+              <span className="h-1 w-1 rounded-full bg-orange-400" />
+              <span className="flex items-center gap-1 text-[10px] font-bold text-lime-400 tracking-wider">
+                <span className="h-1.5 w-1.5 rounded-full bg-lime-400 animate-pulse" />
+                SYSTEM ONLINE
+              </span>
+              <span className="h-1 w-1 rounded-full bg-border-default" />
+              <LiveClock />
             </div>
-            <h2 className="text-2xl font-bold text-text-primary tracking-tight">
-              Welcome to the cockpit, <span className="gradient-text">{user?.name}</span> ✨
+            <h2 className="text-2xl md:text-3xl font-extrabold text-text-primary tracking-tight">
+              Welcome back, <span className="gradient-text">{user?.name || 'Commander'}</span> ✨
             </h2>
-            <p className="text-xs text-text-secondary max-w-xl mt-1 leading-relaxed">
-              You have <span className="text-primary-300 font-bold">{pendingTodayCount} pending tasks</span> for today. 
-              Your active streak is <span className="text-warning-400 font-bold">{bestStreak} days</span>. Keep building momentum!
+            <p className="text-xs text-text-secondary max-w-xl mt-1.5 leading-relaxed">
+              You have{' '}
+              <span className="text-orange-400 font-bold">{pendingTodayCount} pending task{pendingTodayCount !== 1 ? 's' : ''}</span> for today.
+              {bestStreak > 0 && <> Your active streak is <span className="text-amber-400 font-bold">{bestStreak} days 🔥</span>.</>}
+              {' '}Keep building momentum!
             </p>
+
+            {/* Quick nav pills */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {quickLinks.map((link) => (
+                <Link key={link.to} to={link.to}>
+                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border border-border-default hover:border-orange-500/30 ${link.bg} ${link.color} transition-all duration-200 hover:scale-105 cursor-pointer`}>
+                    <link.icon className="h-3 w-3" />
+                    {link.label}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-          <div className="flex gap-2.5">
+
+          <div className="flex gap-2.5 shrink-0">
             <Link to="/tasks">
-              <Button size="xs" variant="outline">Tasks</Button>
+              <Button size="xs" variant="outline">Add Task</Button>
             </Link>
             <Link to="/ai">
               <Button size="xs" variant="gradient" icon={HiOutlineLightningBolt}>AI Coach</Button>
@@ -144,101 +186,152 @@ export default function DashboardPage() {
         </div>
       </Card>
 
-      {/* Main Asymmetrical Telemetry Grid */}
+      {/* ── 4 Stat Cards Row ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          icon={HiOutlineCheckCircle}
+          value={completedCount}
+          label="Tasks Completed"
+          sublabel={`${totalTasks} total tasks`}
+          trend={4}
+          color="lime"
+          index={0}
+        />
+        <StatCard
+          icon={HiOutlineFire}
+          value={`${bestStreak}d`}
+          label="Best Streak"
+          sublabel="consecutive days"
+          trend={bestStreak > 7 ? 12 : 0}
+          color="amber"
+          index={1}
+        />
+        <StatCard
+          icon={HiOutlineChartBar}
+          value={`${productivityScore}%`}
+          label="Completion Rate"
+          sublabel="tasks done / total"
+          trend={productivityScore > 50 ? 8 : -3}
+          color="orange"
+          index={2}
+        />
+        <StatCard
+          icon={HiOutlineChip}
+          value={`${activeGoals}`}
+          label="Active Goals"
+          sublabel={`${totalGoals} goals total`}
+          color="violet"
+          index={3}
+        />
+      </div>
+
+      {/* ── Main 3-column Grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Telemetry Column (Circular Radar + Habits List) */}
-        <div className="lg:col-span-4 space-y-6 flex flex-col justify-between">
-          
-          {/* Concentric Telemetry Radar Block */}
-          <Card className="flex flex-col items-center justify-center p-6 border border-white/[0.04] bg-surface-900/30 flex-1 relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-20 blur-[50px] bg-radial-gradient" 
-              style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 60%)' }}
-            />
+
+        {/* Left Column: Radar + Habits */}
+        <div className="lg:col-span-4 space-y-6">
+
+          {/* Productivity Radar */}
+          <Card className="flex flex-col items-center justify-center p-6 border border-white/[0.04] bg-surface-900/30 relative overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(circle at 50% 60%, rgba(168,85,247,0.07) 0%, transparent 65%)' }} />
+
             <div className="flex items-center gap-2.5 mb-5 select-none z-10">
-              <div className="p-1.5 rounded-lg bg-secondary-500/10 border border-secondary-500/20">
-                <HiOutlineLightningBolt className="h-4 w-4 text-secondary-400" />
+              <div className="p-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                <HiOutlineLightningBolt className="h-4 w-4 text-violet-400" />
               </div>
               <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Productivity Radar</h3>
             </div>
 
-            <div className="relative mb-6 z-10 flex items-center justify-center">
-              {/* Outer pulsing ring */}
-              <div className="absolute inset-0 rounded-full border border-primary-500/10 animate-ping opacity-75" style={{ animationDuration: '3s' }} />
-              
+            <div className="relative mb-5 z-10 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border border-orange-500/8 animate-ping opacity-60" style={{ animationDuration: '3s' }} />
               <svg className="h-40 w-40 -rotate-90" viewBox="0 0 100 100">
-                {/* Background loop */}
-                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="5.5" />
-                {/* Foreground speedometer ring */}
+                {/* Track rings */}
+                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="6" />
+                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
+                <circle cx="50" cy="50" r="18" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
+                {/* Progress arc */}
                 <circle
                   cx="50" cy="50" r="42" fill="none"
-                  stroke="url(#radarScoreGrad)" strokeWidth="6"
+                  stroke="url(#radarGrad)" strokeWidth="6.5"
                   strokeLinecap="round"
                   strokeDasharray={`${productivityScore * 2.64} ${100 * 2.64}`}
                   className="transition-all duration-1000 ease-out"
                 />
                 <defs>
-                  <linearGradient id="radarScoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#fb923c" />
+                  <linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#f97316" />
                     <stop offset="100%" stopColor="#ea580c" />
                   </linearGradient>
                 </defs>
               </svg>
-              
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-extrabold tracking-tight text-text-primary">{productivityScore}%</span>
-                <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-1">Score</span>
+                <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Score</span>
               </div>
             </div>
-            
-            <div className="text-center z-10 select-none">
+
+            <div className="text-center z-10 w-full space-y-2">
               <p className="text-[11px] font-bold text-text-secondary">
-                {completedCount} of {totalTasks} Tasks Logged
+                {completedCount} of {totalTasks} Tasks Completed
               </p>
-              <div className="flex items-center justify-center gap-1.5 mt-1.5 text-[9px] text-accent-400 font-bold uppercase tracking-wider">
+              <div className="w-full bg-surface-800/50 rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full transition-all duration-1000"
+                  style={{ width: `${productivityScore}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-center gap-1.5 text-[9px] text-lime-400 font-bold uppercase tracking-wider">
                 <HiOutlineTrendingUp className="h-3 w-3" />
-                <span>+4% week-on-week increase</span>
+                <span>+4% vs last week</span>
               </div>
             </div>
           </Card>
 
-          {/* Quick Habits Check List */}
+          {/* Habits Checklist */}
           <Card className="p-5 border border-white/[0.04]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-warning-500/10 border border-warning-500/20">
-                  <HiOutlineFire className="h-4 w-4 text-warning-400" />
+                <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                  <HiOutlineFire className="h-4 w-4 text-amber-400" />
                 </div>
-                <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Habits Checklist</h3>
+                <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Today's Habits</h3>
               </div>
-              <Link to="/habits" className="text-[10px] text-primary-400 hover:text-primary-300 font-bold uppercase tracking-wider">
-                Manage
+              <Link to="/habits" className="text-[10px] text-orange-400 hover:text-orange-300 font-bold uppercase tracking-wider transition-colors">
+                All →
               </Link>
             </div>
-            
-            <div className="space-y-2 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
-              {habits.length === 0 ? (
-                <p className="text-[11px] text-text-muted py-4 text-center italic select-none">No habits tracked yet.</p>
-              ) : (
-                habits.slice(0, 3).map((habit) => {
-                  const isCompleted = habit.history.includes(todayStr);
-                  const streak = getStreak(habit);
 
+            <div className="space-y-2 max-h-[240px] overflow-y-auto custom-scrollbar pr-1">
+              {habits.length === 0 ? (
+                <div className="py-8 text-center space-y-2">
+                  <HiOutlineFire className="h-8 w-8 text-text-muted mx-auto opacity-40" />
+                  <p className="text-[11px] text-text-muted italic">No habits tracked yet.</p>
+                  <Link to="/habits">
+                    <Button size="xs" variant="outline" className="mt-1">Add your first habit</Button>
+                  </Link>
+                </div>
+              ) : (
+                habits.slice(0, 5).map((habit) => {
+                  const isCompleted = habit.history?.includes(todayStr);
+                  const streak = getStreak(habit);
                   return (
-                    <div key={habit.id} className="flex items-center justify-between p-2.5 rounded-xl bg-surface-900/20 border border-white/[0.02] hover:bg-surface-800/20 transition-all">
+                    <div key={habit._id || habit.id} className="flex items-center justify-between p-2.5 rounded-xl bg-surface-900/20 border border-white/[0.02] hover:bg-surface-800/30 transition-all group">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <span className="text-base select-none">{habit.icon}</span>
+                        <span className="text-base select-none">{habit.icon || '🌱'}</span>
                         <div className="min-w-0">
                           <p className="text-xs font-bold text-text-primary truncate">{habit.name}</p>
-                          <p className="text-[9px] text-text-muted mt-0.5 font-bold uppercase tracking-wider">{streak} day streak 🔥</p>
+                          <p className="text-[9px] text-text-muted mt-0.5 font-bold uppercase tracking-wider">
+                            {streak > 0 ? `${streak}d streak 🔥` : 'Start today!'}
+                          </p>
                         </div>
                       </div>
                       <button
-                        onClick={() => toggleHabitCheckIn(habit.id, todayStr)}
-                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer ${
+                        onClick={() => toggleHabitCheckIn(habit._id || habit.id, todayStr)}
+                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer shrink-0 ${
                           isCompleted
-                            ? 'bg-accent-500 border-accent-500 shadow-[0_0_10px_rgba(132,204,22,0.25)]'
-                            : 'border-text-muted/40 hover:border-text-secondary bg-surface-950/20'
+                            ? 'bg-lime-500 border-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.3)]'
+                            : 'border-text-muted/30 hover:border-orange-400/60 bg-surface-950/20'
                         }`}
                       >
                         {isCompleted && (
@@ -255,54 +348,59 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Center Grid Column (Telemetry Graphs & Activity terminal logs) */}
+        {/* Center Column: Charts + Activity Feed */}
         <div className="lg:col-span-5 space-y-6">
-          
-          {/* Charts container */}
+
+          {/* Charts */}
           <Card className="p-5 border border-white/[0.04]">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-primary-500/10 border border-primary-500/20">
-                  <HiOutlineChartBar className="h-4 w-4 text-primary-400" />
+                <div className="p-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20">
+                  <HiOutlineChartBar className="h-4 w-4 text-orange-400" />
                 </div>
                 <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Activity Telemetry</h3>
               </div>
-              <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">weekly logs</span>
+              <div className="flex items-center gap-3 text-[9px] font-bold text-text-muted uppercase tracking-wider">
+                <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-orange-500/40" />Total</span>
+                <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-orange-500" />Done</span>
+              </div>
             </div>
 
-            <div className="space-y-6">
-              {/* Tasks Bar Chart */}
+            <div className="space-y-5">
               <div>
-                <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 pl-1">Tasks Completed</p>
-                <div className="h-36">
+                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mb-2 pl-1">Tasks — This Week</p>
+                <div className="h-32">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={taskChartData} barGap={4}>
+                    <BarChart data={taskChartData} barGap={3} barCategoryGap="35%">
                       <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={25} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={22} />
                       <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
-                      <Bar dataKey="total" fill="rgba(255,255,255,0.03)" radius={[4, 4, 4, 4]} name="Total" />
-                      <Bar dataKey="completed" fill="#ea580c" radius={[4, 4, 4, 4]} name="Completed" />
+                      <Bar dataKey="total" fill="rgba(255,255,255,0.04)" radius={[3, 3, 0, 0]} name="Total" />
+                      <Bar dataKey="completed" fill="#ea580c" radius={[3, 3, 0, 0]} name="Done" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Focus Area Chart */}
               <div className="border-t border-white/[0.04] pt-4">
-                <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 pl-1">Focus Session Hours</p>
-                <div className="h-36">
+                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mb-2 pl-1">Focus Hours — Daily Target: 4h</p>
+                <div className="h-32">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={focusData}>
                       <defs>
-                        <linearGradient id="dashFocusGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#d97706" stopOpacity={0.15} />
-                          <stop offset="100%" stopColor="#d97706" stopOpacity={0} />
+                        <linearGradient id="focusGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.2} />
+                          <stop offset="100%" stopColor="#f59e0b" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={25} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={22} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Area type="monotone" dataKey="hours" stroke="#d97706" fill="url(#dashFocusGrad)" strokeWidth={2} name="Focus Hours" dot={false} />
+                      <ReferenceLine y={4} stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+                      <Area type="monotone" dataKey="hours" stroke="#f59e0b" fill="url(#focusGrad)" strokeWidth={2} name="Focus hrs"
+                        dot={{ fill: '#f59e0b', r: 3, strokeWidth: 0 }}
+                        activeDot={{ r: 5, fill: '#f59e0b', strokeWidth: 0 }}
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -310,75 +408,98 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-          {/* Terminal Style Activity Logs */}
-          <Card className="p-5 border border-white/[0.04] bg-surface-900/35">
+          {/* Terminal Activity Feed */}
+          <Card className="p-5 border border-white/[0.04] bg-surface-900/40">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-secondary-500/10 border border-secondary-500/20">
-                  <HiOutlineLightningBolt className="h-4 w-4 text-secondary-400" />
+                <div className="p-1.5 rounded-lg bg-lime-500/10 border border-lime-500/20">
+                  <HiOutlineLightningBolt className="h-4 w-4 text-lime-400" />
                 </div>
-                <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Console Activity logs</h3>
+                <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Console Feed</h3>
               </div>
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" title="System Connected" />
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-lime-400 animate-pulse" />
+                <span className="text-[9px] font-mono text-lime-400 font-bold uppercase">Live</span>
+              </div>
             </div>
 
-            <div className="space-y-1.5 font-mono text-[10px] text-text-secondary leading-normal">
+            {/* Terminal header bar */}
+            <div className="flex items-center gap-1.5 mb-3 pb-2.5 border-b border-white/[0.04]">
+              <span className="h-2.5 w-2.5 rounded-full bg-rose-500/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-500/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-lime-500/70" />
+              <span className="ml-2 text-[9px] font-mono text-text-muted">productivityos — activity.log</span>
+            </div>
+
+            <div className="space-y-1.5 font-mono text-[10px] leading-normal">
               {recentActivity.map((activity, idx) => (
-                <div key={idx} className="flex items-start gap-2.5 p-2 rounded-lg bg-surface-950/20 border border-white/[0.01]">
-                  <span className="text-primary-400 select-none">&gt;</span>
-                  <div className="flex-1 min-w-0">
-                    <span className="font-bold text-text-primary">{activity.action}: </span>
-                    <span>{activity.detail}</span>
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.08, duration: 0.3 }}
+                  className="flex items-start gap-2 p-2 rounded-lg hover:bg-surface-800/20 transition-colors group"
+                >
+                  <span className="text-text-muted/40 select-none shrink-0">{String(idx + 1).padStart(2, '0')}</span>
+                  <span className="text-orange-400 select-none shrink-0">$</span>
+                  <div className="flex-1 min-w-0 flex items-start gap-2 flex-wrap">
+                    <span className={`font-extrabold shrink-0 ${activity.color}`}>[{activity.action}]</span>
+                    <span className="text-text-secondary">{activity.detail}</span>
                   </div>
-                  <span className="text-text-muted whitespace-nowrap">{activity.time}</span>
-                </div>
+                  <span className="text-text-muted/50 whitespace-nowrap shrink-0">{activity.time}</span>
+                </motion.div>
               ))}
             </div>
           </Card>
         </div>
 
-        {/* Right Agenda Grid Column (Today's Pending Tasks + Performance Metrics) */}
-        <div className="lg:col-span-3 space-y-6">
-          
-          {/* Today's Agenda Checklist */}
+        {/* Right Column: Agenda + Quick Stats */}
+        <div className="lg:col-span-3 space-y-5">
+
+          {/* Today's Agenda */}
           <Card className="p-5 border border-white/[0.04]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-primary-500/10 border border-primary-500/20">
-                  <HiOutlineCalendar className="h-4 w-4 text-primary-400" />
+                <div className="p-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                  <HiOutlineCalendar className="h-4 w-4 text-cyan-400" />
                 </div>
-                <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Today&apos;s Agenda</h3>
+                <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Today</h3>
               </div>
-              <Link to="/tasks" className="text-[10px] text-primary-400 hover:text-primary-300 font-bold uppercase tracking-wider">
-                Full List
+              <Link to="/tasks" className="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold uppercase tracking-wider transition-colors">
+                Full →
               </Link>
             </div>
 
             <div className="space-y-2">
               {todayTasksList.length === 0 ? (
-                <p className="text-[11px] text-text-muted py-6 text-center italic select-none">No tasks scheduled for today.</p>
+                <div className="py-8 text-center space-y-2">
+                  <HiOutlineCalendar className="h-8 w-8 text-text-muted mx-auto opacity-30" />
+                  <p className="text-[11px] text-text-muted italic">No tasks for today.</p>
+                  <Link to="/tasks">
+                    <Button size="xs" variant="outline" className="mt-1">Schedule a task</Button>
+                  </Link>
+                </div>
               ) : (
                 todayTasksList.map((task) => (
                   <div
-                    key={task.id}
-                    className="flex flex-col gap-2 p-3 rounded-xl bg-surface-900/40 border border-white/[0.02] hover:bg-surface-800/35 transition-all group"
+                    key={task._id || task.id}
+                    className="flex flex-col gap-1.5 p-3 rounded-xl bg-surface-900/40 border border-white/[0.02] hover:bg-surface-800/30 transition-all"
                   >
-                    <div className="flex items-start gap-2.5">
+                    <div className="flex items-start gap-2">
                       <span className={`h-2 w-2 rounded-full mt-1.5 shrink-0 ring-2 ${
-                        task.status === 'completed' ? 'bg-accent-400 ring-accent-400/20' :
-                        task.status === 'in_progress' ? 'bg-primary-400 ring-primary-400/20' : 'bg-text-muted ring-text-muted/20'
+                        task.status === 'completed' ? 'bg-lime-400 ring-lime-400/20' :
+                        task.status === 'in_progress' ? 'bg-orange-400 ring-orange-400/20' : 'bg-text-muted/40 ring-text-muted/10'
                       }`} />
-                      <p className={`text-xs font-bold leading-normal truncate ${
+                      <p className={`text-xs font-bold leading-tight flex-1 ${
                         task.status === 'completed' ? 'text-text-muted line-through font-normal' : 'text-text-primary'
                       }`}>
                         {task.title}
                       </p>
                     </div>
-
-                    <div className="flex items-center justify-between mt-1 border-t border-white/[0.02] pt-2">
+                    <div className="flex items-center justify-between pl-4">
                       <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider">{task.category}</span>
                       <Badge color={priorityMap[task.priority]?.color || 'gray'} size="xs">
-                        {task.priority.toUpperCase()}
+                        {task.priority?.toUpperCase()}
                       </Badge>
                     </div>
                   </div>
@@ -387,51 +508,47 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-          {/* Quick Stats Telemetry Panels */}
-          <div className="space-y-4">
-            {/* Streak card */}
-            <Card hover className="p-4 border border-white/[0.04] bg-surface-900/40 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-warning-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform" />
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-lg font-extrabold text-warning-400">{bestStreak} Days</p>
-                  <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-1">Best Active Streak</p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-warning-500/10 border border-warning-500/20 text-warning-400">
-                  <HiOutlineFire className="h-5 w-5" />
-                </div>
+          {/* Streak Card */}
+          <Card hover className="p-4 border border-white/[0.04] relative overflow-hidden group">
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-2xl font-extrabold text-amber-400 tracking-tight">{bestStreak} <span className="text-sm font-bold">days</span></p>
+                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Best Active Streak</p>
               </div>
-            </Card>
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                <HiOutlineFire className="h-5 w-5" />
+              </div>
+            </div>
+          </Card>
 
-            {/* Deep work logs */}
-            <Card hover className="p-4 border border-white/[0.04] bg-surface-900/40 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-accent-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform" />
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-lg font-extrabold text-accent-400">18.5 hrs</p>
-                  <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-1">Focus Duration</p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-accent-500/10 border border-accent-500/20 text-accent-400">
-                  <HiOutlineClock className="h-5 w-5" />
-                </div>
+          {/* Focus Time Card */}
+          <Card hover className="p-4 border border-white/[0.04] relative overflow-hidden group">
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-2xl font-extrabold text-cyan-400 tracking-tight">18.5 <span className="text-sm font-bold">hrs</span></p>
+                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Weekly Focus Time</p>
               </div>
-            </Card>
+              <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                <HiOutlineClock className="h-5 w-5" />
+              </div>
+            </div>
+          </Card>
 
-            {/* Overall Complete logs */}
-            <Card hover className="p-4 border border-white/[0.04] bg-surface-900/40 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-primary-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform" />
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-lg font-extrabold text-primary-400">{completedCount}</p>
-                  <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-1">Total Tasks Completed</p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-400">
-                  <HiOutlineClipboardList className="h-5 w-5" />
-                </div>
+          {/* Total Completed */}
+          <Card hover className="p-4 border border-white/[0.04] relative overflow-hidden group">
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-2xl font-extrabold text-orange-400 tracking-tight">{completedCount}</p>
+                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Tasks Completed</p>
               </div>
-            </Card>
-          </div>
-          
+              <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400">
+                <HiOutlineClipboardList className="h-5 w-5" />
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </motion.div>

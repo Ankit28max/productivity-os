@@ -137,7 +137,7 @@ export default function Sidebar() {
                       className={cn(
                         'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative',
                         isActive
-                          ? 'bg-primary-500/10 text-primary-400'
+                          ? 'bg-orange-500/10 text-orange-400 shadow-[inset_0_0_20px_rgba(234,88,12,0.05)]'
                           : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary'
                       )}
                     >
@@ -147,7 +147,7 @@ export default function Sidebar() {
                           className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
                           style={{
                             background: 'linear-gradient(180deg, #fb923c, #ea580c)',
-                            boxShadow: '0 0 10px rgba(234, 88, 12, 0.5)',
+                            boxShadow: '0 0 12px rgba(234, 88, 12, 0.7)',
                           }}
                           transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                         />
@@ -155,7 +155,7 @@ export default function Sidebar() {
                       <Icon
                         className={cn(
                           'h-[18px] w-[18px] shrink-0 transition-colors duration-200',
-                          isActive ? 'text-primary-400' : 'text-text-muted group-hover:text-text-secondary'
+                          isActive ? 'text-orange-400' : 'text-text-muted group-hover:text-text-secondary'
                         )}
                       />
                       <AnimatePresence>
@@ -187,7 +187,7 @@ export default function Sidebar() {
           className={cn(
             'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
             location.pathname === ROUTES.SETTINGS
-              ? 'bg-primary-500/10 text-primary-400'
+              ? 'bg-orange-500/10 text-orange-400'
               : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary'
           )}
         >
@@ -208,7 +208,7 @@ export default function Sidebar() {
 
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-text-secondary hover:bg-danger-500/8 hover:text-danger-400 transition-all duration-200 w-full"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-text-secondary hover:bg-red-500/8 hover:text-red-400 transition-all duration-200 w-full"
         >
           <HiOutlineLogout className="h-[18px] w-[18px] shrink-0 text-text-muted" />
           <AnimatePresence>
@@ -225,23 +225,41 @@ export default function Sidebar() {
           </AnimatePresence>
         </button>
 
-        {/* User card */}
+        {/* Enhanced User card with XP bar */}
         <AnimatePresence>
           {(isOpen || isMobileOpen) && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-3 px-3 py-3 mt-2 rounded-xl glass-input"
+              className="mt-2 px-3 py-3 rounded-xl glass-input space-y-2.5"
             >
-              <Avatar name={user?.name} size="sm" />
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-medium text-text-primary truncate">
-                  {user?.name}
-                </p>
-                <p className="text-[11px] text-text-muted truncate">
-                  {user?.email}
-                </p>
+              <div className="flex items-center gap-3">
+                <Avatar name={user?.name} size="sm" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[13px] font-bold text-text-primary truncate">{user?.name}</p>
+                    <span className="text-[9px] font-extrabold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-1.5 py-0.5 rounded-full leading-none">Lv.7</span>
+                  </div>
+                  <p className="text-[11px] text-text-muted truncate">{user?.email}</p>
+                </div>
+              </div>
+              {/* XP Progress bar */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider">XP Progress</span>
+                  <span className="text-[9px] font-bold text-orange-400">2,340 / 3,000</span>
+                </div>
+                <div className="w-full h-1.5 bg-surface-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000"
+                    style={{
+                      width: '78%',
+                      background: 'linear-gradient(90deg, #f97316, #ea580c)',
+                      boxShadow: '0 0 8px rgba(234,88,12,0.4)',
+                    }}
+                  />
+                </div>
               </div>
             </motion.div>
           )}

@@ -4,13 +4,15 @@ import {
   HiOutlineMenu,
   HiOutlineSearch,
   HiOutlineSun,
-  HiOutlineMoon
+  HiOutlineMoon,
+  HiOutlineBell,
 } from 'react-icons/hi';
 import { useSidebar } from '../../context/SidebarContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import Avatar from '../ui/Avatar';
 import { cn } from '../../utils/cn';
+
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
@@ -45,6 +47,7 @@ export default function Navbar() {
   const location = useLocation();
   const [showSearch, setShowSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [now, setNow] = useState(new Date());
   const dropdownRef = useRef(null);
 
   const pageTitle = pageTitles[location.pathname] || 'ProductivityOS';
@@ -59,6 +62,15 @@ export default function Navbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+
 
   return (
     <header
@@ -88,12 +100,24 @@ export default function Navbar() {
 
       {/* Right */}
       <div className="flex items-center gap-1.5">
+        {/* Live date/time */}
+        <div className="hidden md:flex flex-col items-end mr-1">
+          <span className="text-[11px] font-bold text-text-primary tabular-nums">{timeStr}</span>
+          <span className="text-[9px] text-text-muted font-medium">{dateStr}</span>
+        </div>
+
+        <div className="w-px h-5 bg-border-default mx-1 hidden md:block" />
+
         {/* Search */}
         <button
           onClick={() => setShowSearch(!showSearch)}
-          className="p-2.5 rounded-xl hover:bg-surface-700/30 text-text-muted hover:text-text-primary transition-colors"
+          className="flex items-center gap-2 pl-3 pr-2.5 py-1.5 rounded-xl hover:bg-surface-700/30 text-text-muted hover:text-text-primary transition-colors border border-transparent hover:border-border-default"
+          title="Search (⌘K)"
         >
-          <HiOutlineSearch className="h-[18px] w-[18px]" />
+          <HiOutlineSearch className="h-[16px] w-[16px]" />
+          <span className="hidden md:flex items-center gap-1 text-[10px] font-mono text-text-muted/60">
+            <kbd className="px-1.5 py-0.5 rounded bg-surface-700/50 border border-border-default text-[9px]">⌘K</kbd>
+          </span>
         </button>
 
         {/* Theme Toggle */}
@@ -110,7 +134,7 @@ export default function Navbar() {
         </button>
 
         {/* Divider */}
-        <div className="w-px h-6 bg-border-default mx-1.5" />
+        <div className="w-px h-6 bg-border-default mx-1" />
 
         {/* User */}
         <div ref={dropdownRef} className="relative">
