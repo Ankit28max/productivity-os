@@ -5,21 +5,18 @@ import {
   HiOutlineSparkles,
   HiOutlineFire,
   HiOutlineChevronDown,
-  HiOutlineSun,
-  HiOutlineMoon,
 } from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import Card from '../components/ui/Card';
 
 // Seed grid data for the GitHub-style heatmap (7 rows x 26 columns)
-const HEATMAP_COLS = 26;
 const HEATMAP_ROWS = 7;
 const seedHeatmap = () => {
   const data = [];
   for (let r = 0; r < HEATMAP_ROWS; r++) {
     const row = [];
-    for (let c = 0; c < HEATMAP_COLS; c++) {
+    for (let c = 0; c < 26; c++) {
       row.push(Math.floor(Math.random() * 5));
     }
     data.push(row);
@@ -48,12 +45,10 @@ export default function LandingPage() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   
-  // Interactive slider state for calculator
   const [focusHours, setFocusHours] = useState(40);
   const [heatmapData] = useState(seedHeatmap());
   const [openFaq, setOpenFaq] = useState(null);
 
-  // Generate background particles
   const [particles, setParticles] = useState([]);
   useEffect(() => {
     const list = [];
@@ -79,16 +74,15 @@ export default function LandingPage() {
 
   const getHeatmapColor = (intensity) => {
     const map = {
-      0: 'bg-[#1a1a24] border border-white/[0.01]',
-      1: 'bg-[#4c2415] border border-orange-500/10 shadow-[0_0_2px_rgba(249,115,22,0.1)]',
-      2: 'bg-[#853715] border border-orange-500/20 shadow-[0_0_4px_rgba(249,115,22,0.2)]',
-      3: 'bg-[#c24e15] border border-orange-500/35 shadow-[0_0_8px_rgba(249,115,22,0.3)]',
-      4: 'bg-[#ea580c] border border-orange-500/50 shadow-[0_0_12px_rgba(249,115,22,0.5)]',
+      0: 'bg-surface-900 border border-border-default',
+      1: 'bg-orange-900/40 border border-orange-500/10',
+      2: 'bg-orange-800/50 border border-orange-500/20',
+      3: 'bg-orange-700/60 border border-orange-500/35',
+      4: 'bg-orange-600 border border-orange-500/50',
     };
     return map[intensity] || map[0];
   };
 
-  // Calculate XP rank based on slider hours
   const getXPRank = (hours) => {
     if (hours < 20) return { rank: 'Focused Novice', xp: hours * 100, color: 'text-text-secondary' };
     if (hours < 60) return { rank: 'Telemetry Architect', xp: hours * 115, color: 'text-primary-400' };
@@ -99,14 +93,14 @@ export default function LandingPage() {
   const { rank, xp, color: rankColor } = getXPRank(focusHours);
 
   return (
-    <div className="min-h-screen bg-[#0c0c0e] text-[#f0f0ff] relative overflow-x-hidden font-sans select-none">
+    <div className="min-h-screen bg-dark-950 text-text-primary relative overflow-x-hidden font-sans select-none transition-colors duration-300">
       
       {/* Floating particles in background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {particles.map((p) => (
           <motion.div
             key={p.id}
-            className="absolute rounded-full bg-white/20"
+            className="absolute rounded-full bg-text-muted/20"
             style={{
               left: `${p.x}%`,
               top: `${p.y}%`,
@@ -135,8 +129,8 @@ export default function LandingPage() {
       />
 
       {/* FIXED TOP NAVBAR */}
-      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[#0c0c0e] border-b border-white/[0.03] flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto">
-        {/* Left Logo (ProductivityOS Spark Icon + text) */}
+      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-dark-950/95 backdrop-blur-sm border-b border-border-default flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto transition-colors duration-300">
+        {/* Left Logo */}
         <div className="flex items-center gap-2 select-none cursor-pointer" onClick={handleLaunchApp}>
           <div className="h-7 w-7 rounded-lg bg-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
             <HiOutlineSparkles className="h-4.5 w-4.5 text-white" />
@@ -146,26 +140,17 @@ export default function LandingPage() {
 
         {/* Center navigation links */}
         <nav className="hidden md:flex items-center gap-9">
-          <a href="#features" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Features
-          </a>
-          <a href="#consistency" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Heatmap
-          </a>
-          <a href="#telemetry" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Telemetry
-          </a>
-          <a href="#coaching" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            AI Coach
-          </a>
+          <a href="#features" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">Features</a>
+          <a href="#consistency" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">Heatmap</a>
+          <a href="#telemetry" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">Telemetry</a>
+          <a href="#coaching" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">AI Coach</a>
         </nav>
 
-        {/* Right side controls: Split Circle Theme Toggle & Capsule solid button */}
+        {/* Right side controls */}
         <div className="flex items-center gap-5">
-          {/* Split Circle Theme Toggle Icon button */}
           <button
             onClick={toggleTheme}
-            className="p-1 rounded-full text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors cursor-pointer flex items-center justify-center"
+            className="p-1 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-700/30 transition-colors cursor-pointer flex items-center justify-center"
             title="Toggle Theme"
           >
             <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
@@ -173,10 +158,9 @@ export default function LandingPage() {
             </svg>
           </button>
 
-          {/* Capsule Button exactly matches layout */}
           <button
             onClick={handleLaunchApp}
-            className="px-5 py-2 rounded-full text-xs font-bold text-dark-950 bg-white hover:bg-white/90 transition-all cursor-pointer shadow-lg shadow-white/5"
+            className="px-5 py-2 rounded-full text-xs font-bold text-white bg-primary-500 hover:bg-primary-600 transition-all cursor-pointer shadow-lg shadow-primary-500/20"
           >
             Start
           </button>
@@ -191,7 +175,6 @@ export default function LandingPage() {
             Staying focused <br />
             never feels lonely <span className="relative inline-block italic text-orange-500 font-extrabold pr-2">
               here
-              {/* Underline SVG */}
               <svg className="absolute left-0 bottom-[-6px] w-full h-2 text-orange-500" viewBox="0 0 100 10" preserveAspectRatio="none">
                 <path d="M0,5 C30,8 70,2 100,5" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
               </svg>
@@ -205,32 +188,29 @@ export default function LandingPage() {
           <div className="flex items-center gap-4 pt-2">
             <button
               onClick={handleLaunchApp}
-              className="px-5 py-2.5 rounded-full text-xs font-bold text-dark-950 bg-white hover:bg-white/90 transition-all shadow-[0_4px_16px_rgba(255,255,255,0.15)] flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-primary-500 hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/20 flex items-center gap-1.5 cursor-pointer"
             >
               Start Tracking
             </button>
             <button
               onClick={handleLaunchApp}
-              className="px-5 py-2.5 rounded-full text-xs font-bold text-text-primary bg-surface-900/40 border border-white/[0.06] hover:bg-surface-800/50 hover:border-white/12 transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 rounded-full text-xs font-bold text-text-primary bg-surface-800/60 border border-border-subtle hover:bg-surface-700/60 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               Explore Workspace
             </button>
           </div>
         </div>
 
-        {/* Right Panel: ProductivityOS central HUD and floating widgets */}
+        {/* Right Panel: HUD and floating widgets */}
         <div className="lg:col-span-6 relative flex items-center justify-center min-h-[440px]">
-          {/* Faint orange glow backdrop */}
           <div className="absolute h-80 w-80 rounded-full bg-orange-600/10 filter blur-3xl" />
           
           <div className="relative h-[320px] w-[320px] flex items-center justify-center">
-            {/* Spinning HUD radar geometry */}
             <div className="absolute inset-0 rounded-full border border-orange-500/15 animate-spin" style={{ animationDuration: '14s' }} />
-            <div className="absolute inset-6 rounded-full border border-dashed border-white/5 animate-spin" style={{ animationDuration: '9s', animationDirection: 'reverse' }} />
+            <div className="absolute inset-6 rounded-full border border-dashed border-border-default animate-spin" style={{ animationDuration: '9s', animationDirection: 'reverse' }} />
             <div className="absolute inset-12 rounded-full border border-orange-500/5" />
             
-            {/* Glowing Brand Spark Circle */}
-            <div className="h-44 w-44 rounded-full bg-surface-950/80 border border-white/10 flex items-center justify-center shadow-2xl relative overflow-hidden group">
+            <div className="h-44 w-44 rounded-full bg-surface-800/80 border border-border-subtle flex items-center justify-center shadow-2xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-secondary-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="text-center z-10 select-none">
                 <HiOutlineSparkles className="h-12 w-12 text-orange-500 mx-auto animate-pulse" />
@@ -246,7 +226,7 @@ export default function LandingPage() {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute top-4 left-4"
           >
-            <div className="glass-card rounded-2xl p-3 border border-white/10 shadow-lg bg-[#0e0e15]/90 backdrop-blur flex items-center gap-3 w-44">
+            <div className="glass-card rounded-2xl p-3 shadow-lg flex items-center gap-3 w-44">
               <div className="h-8 w-8 rounded-lg bg-orange-600/10 flex items-center justify-center text-orange-500">
                 <HiOutlineFire className="h-5 w-5" />
               </div>
@@ -263,7 +243,7 @@ export default function LandingPage() {
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
             className="absolute right-0 top-14"
           >
-            <div className="glass-card rounded-2xl p-4 border border-white/10 shadow-lg bg-[#0e0e15]/95 backdrop-blur w-48 space-y-2.5">
+            <div className="glass-card rounded-2xl p-4 shadow-lg w-48 space-y-2.5">
               <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider">Leaderboard - This Week</p>
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-[10px] font-semibold">
@@ -288,8 +268,8 @@ export default function LandingPage() {
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
             className="absolute bottom-4 left-0"
           >
-            <div className="glass-card rounded-2xl p-3 border border-white/10 shadow-lg bg-[#0e0e15]/90 backdrop-blur w-64 space-y-1">
-              <div className="flex items-center justify-between border-b border-white/[0.03] pb-1.5">
+            <div className="glass-card rounded-2xl p-3 shadow-lg w-64 space-y-1">
+              <div className="flex items-center justify-between border-b border-border-default pb-1.5">
                 <div className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                   <span className="text-[9px] font-bold text-text-primary">AI Coach reviewed</span>
@@ -308,7 +288,7 @@ export default function LandingPage() {
             transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
             className="absolute bottom-6 right-2"
           >
-            <div className="px-3 py-1.5 rounded-full border border-white/10 bg-[#0e0e15]/95 shadow-md flex items-center gap-1.5">
+            <div className="px-3 py-1.5 rounded-full border border-border-subtle glass-card shadow-md flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
               <span className="text-[9px] font-bold text-text-secondary tracking-wide uppercase">Active Users - 384 online</span>
             </div>
@@ -317,7 +297,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 2: Consistency */}
-      <section id="features" className="max-w-6xl mx-auto px-6 py-24 border-t border-white/[0.03] relative z-10 text-center space-y-12">
+      <section id="features" className="max-w-6xl mx-auto px-6 py-24 border-t border-border-default relative z-10 text-center space-y-12">
         <div className="space-y-3">
           <h2 className="text-xl md:text-3xl font-extrabold text-text-primary tracking-tight max-w-3xl mx-auto leading-relaxed">
             Skip a day, your tracker flags it. Complete a habit, your analytics celebrate.
@@ -325,8 +305,8 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-left">
-          {/* Left Card: Avatars List */}
-          <Card className="p-6 border border-white/[0.04] bg-surface-900/20 flex flex-col justify-between min-h-[320px]">
+          {/* Left Card */}
+          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[320px]">
             <div>
               <h3 className="text-base font-bold text-text-primary">A workspace that adapts</h3>
               <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
@@ -339,7 +319,7 @@ export default function LandingPage() {
                 {['A', 'S', 'N', 'Y', 'H'].map((initial, idx) => (
                   <div
                     key={idx}
-                    className="h-10 w-10 rounded-full border-2 border-[#0c0c0e] bg-surface-850 flex items-center justify-center text-xs font-bold text-text-primary -ml-2.5 shadow-md"
+                    className="h-10 w-10 rounded-full border-2 border-dark-950 bg-surface-700 flex items-center justify-center text-xs font-bold text-text-primary -ml-2.5 shadow-md"
                     style={{ zIndex: 5 - idx }}
                   >
                     {initial}
@@ -352,14 +332,14 @@ export default function LandingPage() {
               <p className="text-[10px] text-text-muted font-semibold tracking-wide">TELEMETRY - 40 FOCUS SESSIONS LIVE</p>
             </div>
 
-            <div className="px-3.5 py-2.5 rounded-xl bg-surface-950/40 border border-white/[0.02] w-fit font-mono text-[9.5px] text-text-secondary">
+            <div className="px-3.5 py-2.5 rounded-xl bg-surface-900/40 border border-border-default w-fit font-mono text-[9.5px] text-text-secondary">
               <span className="text-orange-400 font-bold">&gt; Aman: </span>
               "completed task: build UI context layout"
             </div>
           </Card>
 
-          {/* Right Card: github style consistency check-in heatmap */}
-          <Card className="p-6 border border-white/[0.04] bg-surface-900/20 flex flex-col justify-between min-h-[320px]">
+          {/* Right Card: heatmap */}
+          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[320px]">
             <div>
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-text-primary">Consistency that compounds</h3>
@@ -372,7 +352,6 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Heatmap Matrix Grid Rendering */}
             <div id="consistency" className="py-5 select-none overflow-x-auto">
               <p className="text-[8px] font-bold text-text-muted uppercase mb-2">Last Seven Weeks</p>
               <div className="grid grid-flow-col gap-1 w-fit">
@@ -381,9 +360,7 @@ export default function LandingPage() {
                     {row.map((intensity, cIdx) => (
                       <div
                         key={cIdx}
-                        className={`h-2.5 w-2.5 rounded-sm transition-colors duration-300 ${getHeatmapColor(
-                          intensity
-                        )}`}
+                        className={`h-2.5 w-2.5 rounded-sm transition-colors duration-300 ${getHeatmapColor(intensity)}`}
                         title={`Check-in day score: ${intensity}`}
                       />
                     ))}
@@ -404,8 +381,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Interactive Section: XP Calculator Slider */}
-      <section className="max-w-6xl mx-auto px-6 py-16 border-t border-white/[0.03] relative z-10 text-center space-y-8 select-none">
+      {/* XP Calculator Slider */}
+      <section className="max-w-6xl mx-auto px-6 py-16 border-t border-border-default relative z-10 text-center space-y-8 select-none">
         <div className="space-y-2">
           <p className="text-xs text-orange-500 font-bold uppercase tracking-wider">XP Calculator</p>
           <h2 className="text-xl md:text-2xl font-extrabold text-text-primary tracking-tight">
@@ -416,7 +393,7 @@ export default function LandingPage() {
           </p>
         </div>
 
-        <Card className="max-w-xl mx-auto p-6 border border-white/[0.04] bg-surface-900/20 space-y-6">
+        <Card className="max-w-xl mx-auto p-6 border border-border-subtle bg-surface-800/40 space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs font-bold text-text-primary">
               <span>Weekly Target Focus</span>
@@ -428,11 +405,11 @@ export default function LandingPage() {
               max="120"
               value={focusHours}
               onChange={(e) => setFocusHours(Number(e.target.value))}
-              className="w-full h-1 bg-surface-950 rounded-lg appearance-none cursor-pointer accent-orange-500"
+              className="w-full h-1 bg-surface-700 rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 border-t border-white/[0.03] pt-4 text-left">
+          <div className="grid grid-cols-2 gap-4 border-t border-border-default pt-4 text-left">
             <div>
               <p className="text-[10px] font-bold text-text-muted uppercase">Estimated XP Output</p>
               <p className="text-lg font-extrabold text-text-primary mt-0.5">{xp.toLocaleString()} XP</p>
@@ -446,7 +423,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 3: Telemetry Quiz Panel */}
-      <section id="telemetry" className="max-w-6xl mx-auto px-6 py-20 border-t border-white/[0.03] relative z-10 text-center space-y-12">
+      <section id="telemetry" className="max-w-6xl mx-auto px-6 py-20 border-t border-border-default relative z-10 text-center space-y-12">
         <div className="space-y-3">
           <h2 className="text-xl md:text-3xl font-extrabold text-text-primary tracking-tight max-w-2xl mx-auto">
             Interactive checklists that move with your goals.
@@ -457,9 +434,9 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-left items-start">
-          {/* Left card: Mock live task quiz checklist */}
-          <Card className="lg:col-span-7 p-6 border border-white/[0.04] bg-surface-900/20 space-y-5">
-            <div className="flex items-center justify-between border-b border-white/[0.03] pb-3">
+          {/* Left card: Quiz */}
+          <Card className="lg:col-span-7 p-6 border border-border-subtle bg-surface-800/40 space-y-5">
+            <div className="flex items-center justify-between border-b border-border-default pb-3">
               <div className="flex items-center gap-2">
                 <span className="inline-block h-2 w-7 rounded bg-orange-600 text-[8px] font-bold text-white flex items-center justify-center select-none uppercase">Live</span>
                 <span className="text-[9px] font-bold text-text-muted tracking-wide uppercase">single choice</span>
@@ -475,7 +452,6 @@ export default function LandingPage() {
                 <p className="text-[10px] text-text-secondary mt-1 font-semibold">Asked by AI Coach · Productivity OS · 10s left</p>
               </div>
 
-              {/* Multiple choice options progress */}
               <div className="space-y-2.5">
                 {[
                   { key: 'A', label: 'Delegate task check-ins to other tools', percent: 82, active: true },
@@ -487,21 +463,20 @@ export default function LandingPage() {
                     key={idx}
                     className={`relative rounded-xl p-3 border transition-all text-xs font-semibold overflow-hidden select-none ${
                       opt.active
-                        ? 'border-orange-500/30 bg-[#ea580c]/5 text-text-primary shadow-[0_0_12px_rgba(234,88,12,0.05)]'
-                        : 'border-white/[0.03] bg-surface-950/20 text-text-secondary hover:text-text-primary hover:bg-surface-800/10'
+                        ? 'border-orange-500/30 bg-orange-500/5 text-text-primary'
+                        : 'border-border-default bg-surface-900/20 text-text-secondary hover:text-text-primary hover:bg-surface-700/20'
                     }`}
                   >
-                    {/* Background indicator bar representing votes */}
                     <div
                       className={`absolute top-0 left-0 bottom-0 z-0 transition-all duration-1000 ${
-                        opt.active ? 'bg-orange-600/15' : 'bg-white/5'
+                        opt.active ? 'bg-orange-600/15' : 'bg-surface-700/20'
                       }`}
                       style={{ width: `${opt.percent}%` }}
                     />
                     <div className="relative z-10 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className={`h-5.5 w-5.5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                          opt.active ? 'bg-orange-600 text-white' : 'bg-surface-950 text-text-secondary'
+                          opt.active ? 'bg-orange-600 text-white' : 'bg-surface-700 text-text-secondary'
                         }`}>{opt.key}</span>
                         <span>{opt.label}</span>
                       </div>
@@ -513,11 +488,10 @@ export default function LandingPage() {
             </div>
           </Card>
 
-          {/* Right card: Telemetry charts & leaderboard lists */}
+          {/* Right card */}
           <div className="lg:col-span-5 space-y-6">
-            {/* Coach stats badge */}
-            <Card className="p-4 border border-white/[0.04] bg-surface-900/20 flex items-center gap-4">
-              <div className="h-10 w-10 rounded-full bg-surface-950 flex items-center justify-center text-orange-500 border border-white/5 overflow-hidden">
+            <Card className="p-4 border border-border-subtle bg-surface-800/40 flex items-center gap-4">
+              <div className="h-10 w-10 rounded-full bg-surface-700 flex items-center justify-center text-orange-500 border border-border-default overflow-hidden">
                 <div className="h-9 w-9 rounded-full bg-orange-600/10 flex items-center justify-center text-orange-500 text-xs font-bold font-mono border border-orange-500/20">
                   AI
                 </div>
@@ -526,33 +500,32 @@ export default function LandingPage() {
                 <p className="text-xs font-bold text-text-primary">AI Coach <span className="text-[9px] font-bold text-orange-500 ml-1.5 uppercase bg-orange-500/10 px-1.5 py-0.5 rounded">helper</span></p>
                 <p className="text-[9px] text-text-muted mt-0.5">Productivity OS</p>
               </div>
-              <div className="text-right border-l border-white/[0.04] pl-4 font-mono select-none">
+              <div className="text-right border-l border-border-default pl-4 font-mono select-none">
                 <p className="text-[8px] text-text-muted uppercase">Active Users</p>
                 <p className="text-xs font-bold text-text-primary">449</p>
               </div>
             </Card>
 
-            {/* Leaderboard list */}
-            <Card className="p-5 border border-white/[0.04] bg-surface-900/20">
-              <div className="flex items-center justify-between border-b border-white/[0.03] pb-3 mb-4 select-none">
+            <Card className="p-5 border border-border-subtle bg-surface-800/40">
+              <div className="flex items-center justify-between border-b border-border-default pb-3 mb-4 select-none">
                 <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Live Leaderboard</h3>
                 <span className="text-[9px] font-mono text-text-muted">Top 5</span>
               </div>
 
               <div className="space-y-4">
                 {[
-                  { name: '1. Nausheen', score: 612, color: 'bg-primary-500/25 border-primary-500/35 text-primary-400' },
-                  { name: '2. Ashutosh', score: 589, color: 'bg-emerald-500/25 border-emerald-500/35 text-emerald-400' },
-                  { name: '3. Pallab', score: 457, color: 'bg-secondary-500/25 border-secondary-500/35 text-secondary-400' },
-                  { name: '4. Debesh', score: 430, color: 'bg-orange-500/25 border-orange-500/35 text-orange-400' }
+                  { name: '1. Nausheen', score: 612, barColor: 'bg-primary-500/40' },
+                  { name: '2. Ashutosh', score: 589, barColor: 'bg-emerald-500/40' },
+                  { name: '3. Pallab', score: 457, barColor: 'bg-secondary-500/40' },
+                  { name: '4. Debesh', score: 430, barColor: 'bg-orange-500/40' }
                 ].map((user, idx) => (
                   <div key={idx} className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold">
                       <span className="text-text-primary">{user.name}</span>
                       <span className="font-mono text-text-secondary text-[10px]">{user.score}</span>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-surface-950 overflow-hidden">
-                      <div className={`h-full rounded-full ${user.color.split(' ')[0]}`} style={{ width: `${(user.score / 650) * 100}%` }} />
+                    <div className="w-full h-1.5 rounded-full bg-surface-700 overflow-hidden">
+                      <div className={`h-full rounded-full ${user.barColor}`} style={{ width: `${(user.score / 650) * 100}%` }} />
                     </div>
                   </div>
                 ))}
@@ -563,7 +536,7 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ Accordion */}
-      <section id="coaching" className="max-w-4xl mx-auto px-6 py-20 border-t border-white/[0.03] relative z-10 space-y-10 select-none">
+      <section id="coaching" className="max-w-4xl mx-auto px-6 py-20 border-t border-border-default relative z-10 space-y-10 select-none">
         <div className="text-center space-y-2">
           <p className="text-xs text-orange-500 font-bold uppercase tracking-wider">Help Desk</p>
           <h2 className="text-xl md:text-2xl font-extrabold text-text-primary tracking-tight">
@@ -578,7 +551,7 @@ export default function LandingPage() {
           {FAQ_ITEMS.map((faq, idx) => (
             <Card
               key={idx}
-              className="p-4 border border-white/[0.04] bg-[#0e0e15]/40 hover:bg-surface-850/30 transition-all duration-300 cursor-pointer overflow-hidden"
+              className="p-4 border border-border-subtle bg-surface-800/40 hover:bg-surface-700/40 transition-all duration-300 cursor-pointer overflow-hidden"
               onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
             >
               <div className="flex items-center justify-between font-bold text-xs text-text-primary">
@@ -596,7 +569,7 @@ export default function LandingPage() {
                     animate={{ height: 'auto', opacity: 1, marginTop: 12 }}
                     exit={{ height: 0, opacity: 0, marginTop: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="text-text-secondary text-[11px] leading-relaxed pr-6 border-t border-white/[0.02] pt-3"
+                    className="text-text-secondary text-[11px] leading-relaxed pr-6 border-t border-border-default pt-3"
                   >
                     {faq.a}
                   </motion.div>
@@ -608,7 +581,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer launch section */}
-      <section className="max-w-5xl mx-auto px-6 py-24 text-center border-t border-white/[0.03] relative z-10">
+      <section className="max-w-5xl mx-auto px-6 py-24 text-center border-t border-border-default relative z-10">
         <div className="space-y-6">
           <h2 className="text-2xl md:text-3xl font-extrabold text-text-primary tracking-tight">Establish Your Command Deck Today</h2>
           <p className="text-xs text-text-secondary max-w-sm mx-auto leading-relaxed">
@@ -616,7 +589,7 @@ export default function LandingPage() {
           </p>
           <button
             onClick={handleLaunchApp}
-            className="px-6 py-2.5 rounded-full text-xs font-bold text-dark-950 bg-white hover:bg-white/90 transition-all shadow-[0_4px_16px_rgba(255,255,255,0.15)] cursor-pointer"
+            className="px-6 py-2.5 rounded-full text-xs font-bold text-white bg-primary-500 hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/20 cursor-pointer"
           >
             Launch Free Console
           </button>
@@ -624,7 +597,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 text-center border-t border-white/[0.02] relative z-10 text-[9px] text-text-muted font-mono select-none">
+      <footer className="py-8 text-center border-t border-border-default relative z-10 text-[9px] text-text-muted font-mono select-none">
         ProductivityOS © 2026. Custom layout tailored for cyber-command metrics.
       </footer>
     </div>
