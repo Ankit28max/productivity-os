@@ -7,7 +7,7 @@ const variants = {
   secondary:
     'glass-input hover:bg-surface-700/60 text-text-primary hover:border-white/12',
   ghost:
-    'bg-transparent hover:bg-white/5 text-text-secondary hover:text-text-primary',
+    'bg-transparent hover:bg-surface-700/30 text-text-secondary hover:text-text-primary',
   danger:
     'bg-danger-600/90 hover:bg-danger-500 text-white shadow-lg shadow-danger-600/25',
   accent:
@@ -15,7 +15,7 @@ const variants = {
   gradient:
     'gradient-primary text-white shadow-lg shadow-primary-600/30 hover:shadow-primary-500/50 hover:brightness-110',
   neon:
-    'bg-transparent border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 hover:border-primary-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]',
+    'bg-transparent border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 hover:border-primary-400 hover:shadow-[0_0_20px_rgba(234,88,12,0.15)]',
 };
 
 const sizes = {
