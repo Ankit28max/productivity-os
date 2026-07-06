@@ -305,7 +305,7 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-left">
           {/* Left Card: A Workspace That Adapts */}
-          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[380px] hover:border-orange-500/20 transition-all duration-300">
+          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col gap-5 min-h-[380px] hover:border-orange-500/20 transition-all duration-300">
             <div>
               <h3 className="text-base font-bold text-text-primary">A workspace that adapts</h3>
               <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
@@ -313,8 +313,8 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* INTEGRATIONS DOCK: Fills empty middle space with premium UI widgets */}
-            <div className="py-4 grid grid-cols-3 gap-3">
+            {/* INTEGRATIONS DOCK */}
+            <div className="grid grid-cols-3 gap-3">
               <div className="p-2.5 rounded-xl bg-surface-900/50 border border-border-default flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] font-mono text-text-muted">VS CODE</span>
@@ -347,27 +347,39 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Mini activity bar chart */}
+            <div className="p-3 rounded-xl bg-surface-900/50 border border-border-default">
+              <p className="text-[9px] font-mono text-text-muted uppercase mb-2">Daily Focus Hours — This Week</p>
+              <div className="flex items-end gap-1.5 h-10">
+                {[3, 5, 4, 7, 6, 5, 4].map((v, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                    <div
+                      className={`w-full rounded-sm ${i === 3 ? 'bg-orange-500' : 'bg-surface-700'}`}
+                      style={{ height: `${(v / 7) * 100}%` }}
+                    />
+                    <span className="text-[7px] text-text-muted">{['M','T','W','T','F','S','S'][i]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-auto space-y-3">
               <div className="flex items-center pl-2">
                 {['A', 'S', 'N', 'Y', 'H'].map((initial, idx) => (
                   <div
                     key={idx}
-                    className="h-9 w-9 rounded-full border-2 border-dark-950 bg-surface-700 flex items-center justify-center text-xs font-bold text-text-primary -ml-2.5 shadow-md"
+                    className="h-8 w-8 rounded-full border-2 border-dark-950 bg-surface-700 flex items-center justify-center text-xs font-bold text-text-primary -ml-2 shadow-md"
                     style={{ zIndex: 5 - idx }}
                   >
                     {initial}
                   </div>
                 ))}
-                <span className="text-[10px] text-text-secondary font-bold ml-4 tracking-wide uppercase">
-                  12,000+ Active Users
-                </span>
+                <span className="text-[10px] text-text-secondary font-bold ml-3 tracking-wide uppercase">12,000+ Active Users</span>
               </div>
-              <p className="text-[10px] text-text-muted font-semibold tracking-wide">TELEMETRY - 40 FOCUS SESSIONS LIVE</p>
-            </div>
-
-            <div className="px-3.5 py-2.5 rounded-xl bg-surface-900/40 border border-border-default w-fit font-mono text-[9.5px] text-text-secondary mt-2">
-              <span className="text-orange-400 font-bold">&gt; Aman: </span>
-              "completed task: build UI context layout"
+              <div className="px-3 py-2 rounded-xl bg-surface-900/40 border border-border-default w-full font-mono text-[9.5px] text-text-secondary">
+                <span className="text-orange-400 font-bold">&gt; Aman: </span>
+                "completed task: build UI context layout"
+              </div>
             </div>
           </Card>
 
@@ -385,30 +397,30 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Expanded Heatmap Grid (38 Columns to fill width) */}
-            <div id="consistency" className="py-3 select-none overflow-x-auto">
+            {/* Heatmap Grid — 10 weeks × 7 days rendered horizontally */}
+            <div id="consistency" className="py-2 select-none">
               <p className="text-[8px] font-bold text-text-muted uppercase mb-2">Last Ten Weeks</p>
-              <div className="grid grid-flow-col gap-1 w-fit">
-                {Array.from({ length: 7 }).map((_, rIdx) => (
-                  <div key={rIdx} className="grid gap-1">
-                    {Array.from({ length: 38 }).map((_, cIdx) => {
+              <div className="flex gap-1">
+                {Array.from({ length: 10 }).map((_, wIdx) => (
+                  <div key={wIdx} className="flex flex-col gap-1">
+                    {Array.from({ length: 7 }).map((_, dIdx) => {
                       const randomIntensity = Math.floor(Math.random() * 5);
                       return (
                         <div
-                          key={cIdx}
-                          className={`h-2.5 w-2.5 rounded-sm transition-colors duration-300 ${getHeatmapColor(randomIntensity)}`}
-                          title={`Check-in intensity score: ${randomIntensity}`}
+                          key={dIdx}
+                          className={`h-3 w-3 rounded-sm ${getHeatmapColor(randomIntensity)}`}
+                          title={`Intensity: ${randomIntensity}`}
                         />
                       );
                     })}
                   </div>
                 ))}
               </div>
-              <div className="flex items-center justify-between text-[8.5px] text-text-muted font-mono mt-2 max-w-[270px]">
+              <div className="flex items-center gap-2 text-[8px] text-text-muted font-mono mt-2">
                 <span>Less</span>
                 <div className="flex gap-1">
                   {[0, 1, 2, 3, 4].map((i) => (
-                    <span key={i} className={`h-2 w-2 rounded-sm ${getHeatmapColor(i)}`} />
+                    <span key={i} className={`h-2.5 w-2.5 rounded-sm block ${getHeatmapColor(i)}`} />
                   ))}
                 </div>
                 <span>More</span>
