@@ -7,6 +7,7 @@ import Spinner from '../components/ui/Spinner';
 
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const SignupPage = lazy(() => import('../pages/SignupPage'));
+const LandingPage = lazy(() => import('../pages/LandingPage'));
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
 const TasksPage = lazy(() => import('../pages/TasksPage'));
 const NotesPage = lazy(() => import('../pages/NotesPage'));
@@ -29,7 +30,7 @@ function PageLoader() {
 function AuthRedirect({ children }) {
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
   return children;
 }
@@ -39,6 +40,14 @@ export default function AppRoutes() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Public routes */}
+        <Route
+          path="/"
+          element={
+            <AuthRedirect>
+              <LandingPage />
+            </AuthRedirect>
+          }
+        />
         <Route
           path="/login"
           element={
@@ -64,7 +73,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<DashboardPage />} />
+          <Route path="dashboard" element={<DashboardPage />} />
           <Route path="tasks" element={<TasksPage />} />
           <Route path="notes" element={<NotesPage />} />
           <Route path="habits" element={<HabitsPage />} />

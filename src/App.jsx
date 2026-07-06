@@ -6,21 +6,23 @@ import { TaskProvider } from './context/TaskContext';
 import { NoteProvider } from './context/NoteContext';
 import { HabitProvider } from './context/HabitContext';
 import { GoalProvider } from './context/GoalContext';
+import { ThemeProvider } from './context/ThemeContext';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <SidebarProvider>
-          <TaskProvider>
-            <NoteProvider>
-              <HabitProvider>
-                <GoalProvider>
-                  <AppRoutes />
-                </GoalProvider>
-              </HabitProvider>
-            </NoteProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <SidebarProvider>
+            <TaskProvider>
+              <NoteProvider>
+                <HabitProvider>
+                  <GoalProvider>
+                    <AppRoutes />
+                  </GoalProvider>
+                </HabitProvider>
+              </NoteProvider>
             <Toaster
               position="top-right"
               toastOptions={{
@@ -51,6 +53,7 @@ export default function App() {
           </TaskProvider>
         </SidebarProvider>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

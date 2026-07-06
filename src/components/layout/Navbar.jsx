@@ -4,14 +4,17 @@ import {
   HiOutlineMenu,
   HiOutlineBell,
   HiOutlineSearch,
+  HiOutlineSun,
+  HiOutlineMoon
 } from 'react-icons/hi';
 import { useSidebar } from '../../context/SidebarContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import Avatar from '../ui/Avatar';
 import { cn } from '../../utils/cn';
 
 const pageTitles = {
-  '/': 'Dashboard',
+  '/dashboard': 'Dashboard',
   '/tasks': 'Tasks',
   '/notes': 'Notes',
   '/habits': 'Habits',
@@ -24,7 +27,7 @@ const pageTitles = {
 };
 
 const pageDescriptions = {
-  '/': 'Your productivity overview',
+  '/dashboard': 'Your productivity overview',
   '/tasks': 'Manage your work',
   '/notes': 'Capture ideas',
   '/habits': 'Build consistency',
@@ -39,6 +42,7 @@ const pageDescriptions = {
 export default function Navbar() {
   const { toggle, isMobile, isOpen } = useSidebar();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [showSearch, setShowSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -91,6 +95,19 @@ export default function Navbar() {
           className="p-2.5 rounded-xl hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors"
         >
           <HiOutlineSearch className="h-[18px] w-[18px]" />
+        </button>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-2.5 rounded-xl hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {theme === 'dark' ? (
+            <HiOutlineSun className="h-[18px] w-[18px]" />
+          ) : (
+            <HiOutlineMoon className="h-[18px] w-[18px]" />
+          )}
         </button>
 
         {/* Notifications */}
