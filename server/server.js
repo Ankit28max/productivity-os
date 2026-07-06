@@ -39,20 +39,22 @@ mongoose
     console.error('MongoDB database connection error:', err);
   });
 
-// Serve static assets in production
+// Serve static assets in production — only for non-API routes
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../dist')));
-  app.get('*', (req, res) => {
+  // Only serve index.html for non-API GET requests
+  app.get(/^(?!\/api).*$/, (req, res) => {
     res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
   });
 }
 
-// Error handling middleware
+// Global error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('[SERVER ERROR]', err.stack);
   res.status(500).json({
     success: false,
     message: err.message || 'Internal Server Error',
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
   });
 });
 
