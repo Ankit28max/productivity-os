@@ -42,11 +42,7 @@ export default function AppRoutes() {
         {/* Public routes */}
         <Route
           path="/"
-          element={
-            <AuthRedirect>
-              <LandingPage />
-            </AuthRedirect>
-          }
+          element={<LandingPage />}
         />
         <Route
           path="/login"
