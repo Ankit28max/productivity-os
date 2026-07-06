@@ -147,8 +147,8 @@ export default function Sidebar() {
                           layoutId="activeNav"
                           className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
                           style={{
-                            background: 'linear-gradient(180deg, #22d3ee, #a855f7)',
-                            boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)',
+                            background: 'linear-gradient(180deg, #fb923c, #ea580c)',
+                            boxShadow: '0 0 10px rgba(234, 88, 12, 0.5)',
                           }}
                           transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                         />

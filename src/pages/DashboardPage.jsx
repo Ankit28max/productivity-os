@@ -179,8 +179,8 @@ export default function DashboardPage() {
                 />
                 <defs>
                   <linearGradient id="radarScoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#06b6d4" />
-                    <stop offset="100%" stopColor="#a855f7" />
+                    <stop offset="0%" stopColor="#fb923c" />
+                    <stop offset="100%" stopColor="#ea580c" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -281,7 +281,7 @@ export default function DashboardPage() {
                       <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={25} />
                       <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
                       <Bar dataKey="total" fill="rgba(255,255,255,0.03)" radius={[4, 4, 4, 4]} name="Total" />
-                      <Bar dataKey="completed" fill="#06b6d4" radius={[4, 4, 4, 4]} name="Completed" />
+                      <Bar dataKey="completed" fill="#ea580c" radius={[4, 4, 4, 4]} name="Completed" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -295,14 +295,14 @@ export default function DashboardPage() {
                     <AreaChart data={focusData}>
                       <defs>
                         <linearGradient id="dashFocusGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#a3e635" stopOpacity={0.15} />
-                          <stop offset="100%" stopColor="#a3e635" stopOpacity={0} />
+                          <stop offset="0%" stopColor="#d97706" stopOpacity={0.15} />
+                          <stop offset="100%" stopColor="#d97706" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} />
                       <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} width={25} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Area type="monotone" dataKey="hours" stroke="#a3e635" fill="url(#dashFocusGrad)" strokeWidth={2} name="Focus Hours" dot={false} />
+                      <Area type="monotone" dataKey="hours" stroke="#d97706" fill="url(#dashFocusGrad)" strokeWidth={2} name="Focus Hours" dot={false} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>

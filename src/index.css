@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 /* ============================================
-   ProductivityOS — Orange & Dark Telemetry Theme System
-   Provides support for dynamic Light and Dark modes.
+   ProductivityOS — Warm Orange & Charcoal Theme System
+   Consistent with the Landing Page palette.
+   Supports dynamic Light and Dark modes.
    ============================================ */
 
 :root {
@@ -60,23 +61,25 @@
   --color-dark-600: var(--bg-surface-lightest);
 
   /* ---- Glass Surfaces (Swapped dynamically) ---- */
+  --color-surface-950: var(--bg-primary);
   --color-surface-900: var(--bg-surface-darker);
+  --color-surface-850: var(--bg-surface);
   --color-surface-800: var(--bg-surface);
   --color-surface-700: var(--bg-surface-lighter);
   --color-surface-600: var(--bg-surface-lightest);
 
-  /* ---- Neon Orange Primary ---- */
-  --color-primary-400: #ffedd5;
+  /* ---- Warm Orange Primary ---- */
+  --color-primary-400: #fb923c;
   --color-primary-500: #ea580c;
   --color-primary-600: #c2410c;
   --color-primary-700: #9a3412;
 
   /* ---- Amber Secondary ---- */
-  --color-secondary-400: #fde047;
+  --color-secondary-400: #fbbf24;
   --color-secondary-500: #d97706;
   --color-secondary-600: #b45309;
 
-  /* ---- Sunset Amber Accent ---- */
+  /* ---- Sunset Accent ---- */
   --color-accent-400: #f59e0b;
   --color-accent-500: #ea580c;
   --color-accent-600: #d97706;
@@ -160,7 +163,7 @@ body {
 }
 
 /* ============================================
-   Ambient Background Orbs
+   Ambient Background Orbs (Warm Orange)
    ============================================ */
 
 @utility ambient-bg {
@@ -177,7 +180,7 @@ body {
   &::before {
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%);
     top: -200px;
     right: -100px;
     animation: orb-drift-1 20s ease-in-out infinite;
@@ -185,7 +188,7 @@ body {
   &::after {
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.05) 0%, transparent 70%);
     bottom: -150px;
     left: -100px;
     animation: orb-drift-2 25s ease-in-out infinite;
@@ -230,61 +233,86 @@ body {
 }
 
 /* ============================================
-   Card Hover Effects
+   Card Hover Effects (Warm Orange)
    ============================================ */
 
 @utility card-hover {
   transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
   &:hover {
     transform: translateY(-3px);
-    border-color: rgba(6, 182, 212, 0.15);
+    border-color: rgba(234, 88, 12, 0.15);
     box-shadow:
-      0 8px 32px rgba(6, 182, 212, 0.08),
+      0 8px 32px rgba(234, 88, 12, 0.08),
       0 2px 8px rgba(0, 0, 0, 0.3);
   }
 }
 
+@utility card-glow-orange {
+  transition: all 250ms ease;
+  &:hover {
+    border-color: rgba(234, 88, 12, 0.25);
+    box-shadow: 0 0 30px rgba(234, 88, 12, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@utility card-glow-amber {
+  transition: all 250ms ease;
+  &:hover {
+    border-color: rgba(217, 119, 6, 0.25);
+    box-shadow: 0 0 30px rgba(217, 119, 6, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@utility card-glow-emerald {
+  transition: all 250ms ease;
+  &:hover {
+    border-color: rgba(16, 185, 129, 0.25);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Keep old names as aliases so nothing breaks */
 @utility card-glow-cyan {
   transition: all 250ms ease;
   &:hover {
-    border-color: rgba(6, 182, 212, 0.25);
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+    border-color: rgba(234, 88, 12, 0.25);
+    box-shadow: 0 0 30px rgba(234, 88, 12, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 }
 
 @utility card-glow-violet {
   transition: all 250ms ease;
   &:hover {
-    border-color: rgba(168, 85, 247, 0.25);
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+    border-color: rgba(217, 119, 6, 0.25);
+    box-shadow: 0 0 30px rgba(217, 119, 6, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 }
 
 @utility card-glow-lime {
   transition: all 250ms ease;
   &:hover {
-    border-color: rgba(132, 204, 22, 0.25);
-    box-shadow: 0 0 30px rgba(132, 204, 22, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+    border-color: rgba(245, 158, 11, 0.25);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 }
 
 /* ============================================
-   Gradient Utilities
+   Gradient Utilities (Warm Orange)
    ============================================ */
 
 @utility gradient-primary {
-  background: linear-gradient(135deg, #06b6d4, #a855f7);
+  background: linear-gradient(135deg, #ea580c, #d97706);
 }
 
 @utility gradient-text {
-  background: linear-gradient(135deg, #22d3ee, #c084fc);
+  background: linear-gradient(135deg, #fb923c, #fbbf24);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 @utility text-gradient {
-  background: linear-gradient(135deg, #22d3ee, #a3e635);
+  background: linear-gradient(135deg, #fb923c, #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -298,7 +326,7 @@ body {
     inset: -1px;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(168, 85, 247, 0.3));
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.3), rgba(217, 119, 6, 0.3));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -307,7 +335,7 @@ body {
 }
 
 /* ============================================
-   Neon Indicator Line
+   Neon Indicator Line (Warm Orange)
    ============================================ */
 
 @utility neon-indicator {
@@ -321,8 +349,8 @@ body {
     width: 3px;
     height: 20px;
     border-radius: 0 4px 4px 0;
-    background: linear-gradient(180deg, #22d3ee, #a855f7);
-    box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+    background: linear-gradient(180deg, #fb923c, #ea580c);
+    box-shadow: 0 0 8px rgba(234, 88, 12, 0.5);
   }
 }
 
@@ -362,8 +390,8 @@ body {
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 12px rgba(6, 182, 212, 0.15); }
-  50% { box-shadow: 0 0 28px rgba(6, 182, 212, 0.3); }
+  0%, 100% { box-shadow: 0 0 12px rgba(234, 88, 12, 0.15); }
+  50% { box-shadow: 0 0 28px rgba(234, 88, 12, 0.3); }
 }
 
 @keyframes orb-drift-1 {
@@ -399,36 +427,48 @@ body {
 }
 
 /* ============================================
-   Glow Utilities
+   Glow Utilities (Warm Orange)
    ============================================ */
 
+@utility glow-orange {
+  box-shadow: 0 0 24px rgba(234, 88, 12, 0.25), 0 0 60px rgba(234, 88, 12, 0.08);
+}
+
+@utility glow-amber {
+  box-shadow: 0 0 24px rgba(217, 119, 6, 0.25), 0 0 60px rgba(217, 119, 6, 0.08);
+}
+
+@utility glow-emerald {
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25), 0 0 60px rgba(16, 185, 129, 0.08);
+}
+
+/* Keep old glow names as aliases so components don't break */
 @utility glow-cyan {
-  box-shadow: 0 0 24px rgba(6, 182, 212, 0.25), 0 0 60px rgba(6, 182, 212, 0.08);
+  box-shadow: 0 0 24px rgba(234, 88, 12, 0.25), 0 0 60px rgba(234, 88, 12, 0.08);
 }
 
 @utility glow-violet {
-  box-shadow: 0 0 24px rgba(168, 85, 247, 0.25), 0 0 60px rgba(168, 85, 247, 0.08);
+  box-shadow: 0 0 24px rgba(217, 119, 6, 0.25), 0 0 60px rgba(217, 119, 6, 0.08);
 }
 
 @utility glow-lime {
-  box-shadow: 0 0 24px rgba(132, 204, 22, 0.25), 0 0 60px rgba(132, 204, 22, 0.08);
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.25), 0 0 60px rgba(245, 158, 11, 0.08);
 }
 
 /* ============================================
-   Focus Ring
+   Focus Ring (Warm Orange)
    ============================================ */
 
 *:focus-visible {
-  outline: 2px solid rgba(6, 182, 212, 0.5);
+  outline: 2px solid rgba(234, 88, 12, 0.5);
   outline-offset: 2px;
 }
 
 /* ============================================
-   Selection Color
+   Selection Color (Warm Orange)
    ============================================ */
 
 ::selection {
-  background: rgba(6, 182, 212, 0.3);
+  background: rgba(234, 88, 12, 0.3);
   color: #f0f0ff;
 }
-

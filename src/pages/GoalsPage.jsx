@@ -134,7 +134,7 @@ export default function GoalsPage() {
   const getCategoryColor = (category) => {
     const map = {
       'Career': 'text-primary-400 bg-primary-500/10 border-primary-500/20',
-      'Learning': 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+      'Learning': 'text-orange-400 bg-orange-500/10 border-orange-500/20',
       'Health & Fitness': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
       'Finance': 'text-amber-400 bg-amber-500/10 border-amber-500/20',
       'Personal': 'text-purple-400 bg-purple-500/10 border-purple-500/20',

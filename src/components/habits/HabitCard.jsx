@@ -13,13 +13,14 @@ export default function HabitCard({ habit, onToggle, onDelete, streak }) {
 
   // Color mapping matching the design system
   const colorMap = {
-    cyan: { text: 'text-primary-400', bg: 'bg-primary-500/10', border: 'border-primary-500/20', fill: '#06b6d4', glow: 'cyan' },
-    lime: { text: 'text-accent-400', bg: 'bg-accent-500/10', border: 'border-accent-500/20', fill: '#84cc16', glow: 'lime' },
-    violet: { text: 'text-secondary-400', bg: 'bg-secondary-500/10', border: 'border-secondary-500/20', fill: '#a855f7', glow: 'violet' },
+    cyan: { text: 'text-primary-400', bg: 'bg-primary-500/10', border: 'border-primary-500/20', fill: '#ea580c', glow: 'orange' },
+    lime: { text: 'text-accent-400', bg: 'bg-accent-500/10', border: 'border-accent-500/20', fill: '#f59e0b', glow: 'amber' },
+    violet: { text: 'text-secondary-400', bg: 'bg-secondary-500/10', border: 'border-secondary-500/20', fill: '#d97706', glow: 'amber' },
     amber: { text: 'text-warning-400', bg: 'bg-warning-500/10', border: 'border-warning-500/20', fill: '#f59e0b', glow: 'amber' },
+    orange: { text: 'text-primary-400', bg: 'bg-primary-500/10', border: 'border-primary-500/20', fill: '#ea580c', glow: 'orange' },
   };
 
-  const activeColor = colorMap[habit.color] || colorMap.cyan;
+  const activeColor = colorMap[habit.color] || colorMap.orange;
 
   // Compute completion rate over the last 30 days
   const completionRate = (() => {

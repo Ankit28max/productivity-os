@@ -59,9 +59,9 @@ export default function PomodoroPage() {
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   const colorMap = {
-    cyan: { stroke: '#06b6d4', bg: 'rgba(6, 182, 212, 0.04)', glow: 'rgba(6, 182, 212, 0.3)' },
-    lime: { stroke: '#84cc16', bg: 'rgba(132, 204, 22, 0.04)', glow: 'rgba(132, 204, 22, 0.3)' },
-    violet: { stroke: '#a855f7', bg: 'rgba(168, 85, 247, 0.04)', glow: 'rgba(168, 85, 247, 0.3)' },
+    cyan: { stroke: '#ea580c', bg: 'rgba(234, 88, 12, 0.04)', glow: 'rgba(234, 88, 12, 0.3)' },
+    lime: { stroke: '#f59e0b', bg: 'rgba(245, 158, 11, 0.04)', glow: 'rgba(245, 158, 11, 0.3)' },
+    violet: { stroke: '#d97706', bg: 'rgba(217, 119, 6, 0.04)', glow: 'rgba(217, 119, 6, 0.3)' },
   };
 
   return (

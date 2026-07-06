@@ -42,8 +42,8 @@ const COLORS = {
   high: '#f43f5e', // red
   medium: '#f59e0b', // amber
   low: '#84cc16', // lime
-  primary: '#06b6d4', // cyan
-  accent: '#a855f7', // violet
+  primary: '#ea580c', // orange
+  accent: '#d97706', // amber
   gray: '#64748b' // slate
 };
 
