@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/productivityos';
 
 mongoose
-  .connect(mongoURI)
+  .connect(mongoURI, { dbName: 'productivityos' })
   .then(() => {
     console.log('MongoDB successfully connected to database server.');
   })
