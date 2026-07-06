@@ -9,6 +9,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import Card from '../components/ui/Card';
+import Logo from '../components/ui/Logo';
 
 // Seed grid data for the GitHub-style heatmap (7 rows x 26 columns)
 const HEATMAP_ROWS = 7;
@@ -131,12 +132,7 @@ export default function LandingPage() {
       {/* FIXED TOP NAVBAR */}
       <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-dark-950/95 backdrop-blur-sm border-b border-border-default flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto transition-colors duration-300">
         {/* Left Logo */}
-        <div className="flex items-center gap-2 select-none cursor-pointer" onClick={handleLaunchApp}>
-          <div className="h-7 w-7 rounded-lg bg-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <HiOutlineSparkles className="h-4.5 w-4.5 text-white" />
-          </div>
-          <span className="font-extrabold text-sm text-text-primary tracking-tight">ProductivityOS</span>
-        </div>
+        <Logo size="sm" className="cursor-pointer" onClick={handleLaunchApp} />
 
         {/* Center navigation links */}
         <nav className="hidden md:flex items-center gap-9">

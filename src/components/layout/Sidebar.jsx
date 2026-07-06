@@ -20,6 +20,7 @@ import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../utils/constants';
 import { cn } from '../../utils/cn';
 import Avatar from '../ui/Avatar';
+import Logo from '../ui/Logo';
 
 const iconMap = {
   HiOutlineHome,
@@ -65,9 +66,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="flex items-center justify-between px-4 h-16 shrink-0 border-b border-white/[0.04]">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary-600/20">
-            <HiOutlineSparkles className="h-5 w-5 text-white" />
-          </div>
+          <Logo size="sm" showText={false} />
           <AnimatePresence>
             {(isOpen || isMobileOpen) && (
               <motion.div
@@ -77,7 +76,7 @@ export default function Sidebar() {
                 className="overflow-hidden"
               >
                 <span className="font-bold text-[15px] text-text-primary whitespace-nowrap tracking-tight">
-                  Productivity<span className="text-primary-400">OS</span>
+                  Productivity<span className="text-orange-500">OS</span>
                 </span>
               </motion.div>
             )}

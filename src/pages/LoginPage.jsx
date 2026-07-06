@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import Logo from '../components/ui/Logo';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -45,9 +46,7 @@ export default function LoginPage() {
           transition={{ duration: 0.6 }}
           className="relative z-10 text-center px-12"
         >
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl gradient-primary mb-6 shadow-lg shadow-primary-600/30">
-            <HiOutlineSparkles className="h-8 w-8 text-white" />
-          </div>
+          <Logo size="xl" className="justify-center mb-6" showText={false} />
           <h1 className="text-4xl font-bold text-text-primary mb-3">
             ProductivityOS
           </h1>
@@ -66,12 +65,7 @@ export default function LoginPage() {
           className="w-full max-w-md"
         >
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center">
-              <HiOutlineSparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-bold text-xl text-text-primary">ProductivityOS</span>
-          </div>
+          <Logo size="md" className="lg:hidden mb-8" />
 
           <h2 className="text-2xl font-bold text-text-primary mb-1">
             Welcome back
