@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
-  HiOutlineSparkles,
   HiOutlineFire,
   HiOutlineChevronDown,
   HiOutlineSun,
@@ -126,37 +125,50 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* Decorative ambient color blur shapes */}
+      {/* Decorative ambient sunset orange/amber color blurs */}
       <div className="absolute top-[10%] left-[-15%] w-[600px] h-[600px] rounded-full blur-[150px] opacity-15 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(234,88,12,0.2) 0%, transparent 65%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(234,88,12,0.15) 0%, transparent 65%)' }}
       />
       <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] rounded-full blur-[150px] opacity-15 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 65%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(217,119,6,0.12) 0%, transparent 65%)' }}
       />
 
-      {/* NAVBAR MATCHING SCREENSHOT EXACTLY (STYLING & STRUCTURE) */}
-      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[#0c0c0e]/90 backdrop-blur-md border-b border-white/[0.03] flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto">
-        {/* Left: ProductivityOS Logo */}
-        <div className="flex items-center gap-2 select-none cursor-pointer" onClick={handleLaunchApp}>
-          <div className="h-7 w-7 rounded-lg bg-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <HiOutlineSparkles className="h-4.5 w-4.5 text-white" />
-          </div>
-          <span className="font-extrabold text-sm text-text-primary tracking-tight">ProductivityOS</span>
+      {/* NAVBAR MATCHING SCREENSHOT EXACTLY (STYLING & MOCK LINKS) */}
+      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[#0c0c0e] border-b border-white/[0.03] flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto">
+        {/* Left: SVG Mascot logo (MUSTACHE MAN) */}
+        <div className="flex items-center">
+          <svg className="h-9 w-9 text-white select-none cursor-pointer" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleLaunchApp}>
+            {/* Turban shape */}
+            <path d="M50 15C32 15 22 28 22 42C22 45 23 48 25 50C29 45 35 40 45 42C48 38 52 38 55 42C65 40 71 45 75 50C77 48 78 45 78 42C78 28 68 15 50 15Z" fill="white" />
+            {/* Diagonal stripes on turban */}
+            <path d="M30 20L45 35M40 16L60 36M52 15L70 33" stroke="#0c0c0e" strokeWidth="2.5" strokeLinecap="round" />
+            {/* Orange forehead bindi */}
+            <circle cx="50" cy="46" r="4.5" fill="#ea580c" />
+            {/* Glasses frames */}
+            <circle cx="36" cy="62" r="12" stroke="white" strokeWidth="4" />
+            <circle cx="64" cy="62" r="12" stroke="white" strokeWidth="4" />
+            <path d="M48 62H52" stroke="white" strokeWidth="4" />
+            {/* Angle brackets inside lenses */}
+            <path d="M38 59L34 62L38 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M62 59L66 62L62 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            {/* Mustache */}
+            <path d="M33 76C43 76 47 70 50 74C53 70 57 76 67 76C73 76 76 72 76 72C76 72 70 82 50 82C30 82 24 72 24 72C24 72 27 76 33 76Z" fill="white" />
+          </svg>
         </div>
 
-        {/* Center navigation links */}
+        {/* Center navigation links matches screenshot exactly */}
         <nav className="hidden md:flex items-center gap-9">
           <a href="#features" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Features
+            Hackathons
           </a>
           <a href="#consistency" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Heatmap
+            Quiz
           </a>
           <a href="#telemetry" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Telemetry
+            Stories
           </a>
           <a href="#coaching" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            AI Coach
+            Courses
           </a>
         </nav>
 
@@ -168,7 +180,6 @@ export default function LandingPage() {
             className="p-1 rounded-full text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors cursor-pointer flex items-center justify-center"
             title="Toggle Theme"
           >
-            {/* Custom split theme circle svg (half fill, half outline) */}
             <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86z"/>
             </svg>
@@ -219,34 +230,37 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Right Panel */}
-        <div className="lg:col-span-6 relative flex items-center justify-center min-h-[420px]">
-          <div className="relative h-72 w-72 flex items-center justify-center">
-            {/* HUD animations */}
-            <div className="absolute inset-0 rounded-full border border-orange-500/10 animate-spin" style={{ animationDuration: '12s' }} />
-            <div className="absolute inset-6 rounded-full border border-dashed border-white/5 animate-spin" style={{ animationDuration: '8s' }} />
-            
-            {/* Coded logo profile block */}
-            <div className="h-44 w-44 rounded-full bg-surface-950/80 border border-white/10 flex items-center justify-center shadow-2xl relative overflow-hidden select-none">
-              <svg className="h-20 w-20 text-white" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M50 15C32 15 22 28 22 42C22 45 23 48 25 50C29 45 35 40 45 42C48 38 52 38 55 42C65 40 71 45 75 50C77 48 78 45 78 42C78 28 68 15 50 15Z" fill="white" />
-                <path d="M30 20L45 35M40 16L60 36M52 15L70 33" stroke="#0c0c0e" strokeWidth="2.5" strokeLinecap="round" />
-                <circle cx="50" cy="46" r="4.5" fill="#ea580c" />
-                <circle cx="36" cy="62" r="12" stroke="white" strokeWidth="4" />
-                <circle cx="64" cy="62" r="12" stroke="white" strokeWidth="4" />
-                <path d="M48 62H52" stroke="white" strokeWidth="4" />
-                <path d="M38 59L34 62L38 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M62 59L66 62L62 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M33 76C43 76 47 70 50 74C53 70 57 76 67 76C73 76 76 72 76 72C76 72 70 82 50 82C30 82 24 72 24 72C24 72 27 76 33 76Z" fill="white" />
-              </svg>
-            </div>
+        {/* Right Panel: Large glowing mascot and floating widgets matching screenshot */}
+        <div className="lg:col-span-6 relative flex items-center justify-center min-h-[440px]">
+          {/* Faint orange glow backdrop behind mascot */}
+          <div className="absolute h-80 w-80 rounded-full bg-orange-600/10 filter blur-3xl" />
+          
+          <div className="relative h-[320px] w-[320px] flex items-center justify-center">
+            {/* SVG Mascot logo (MUSTACHE MAN) rendering in large high-fidelity center-right */}
+            <svg className="h-[280px] w-[280px] text-white drop-shadow-[0_0_35px_rgba(255,255,255,0.12)] select-none" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Turban */}
+              <path d="M50 15C32 15 22 28 22 42C22 45 23 48 25 50C29 45 35 40 45 42C48 38 52 38 55 42C65 40 71 45 75 50C77 48 78 45 78 42C78 28 68 15 50 15Z" fill="white" />
+              {/* Stripes */}
+              <path d="M30 20L45 35M40 16L60 36M52 15L70 33" stroke="#0c0c0e" strokeWidth="2.5" strokeLinecap="round" />
+              {/* Bindi forehead dot */}
+              <circle cx="50" cy="46" r="4.5" fill="#ea580c" />
+              {/* Glasses */}
+              <circle cx="36" cy="62" r="12" stroke="white" strokeWidth="4" />
+              <circle cx="64" cy="62" r="12" stroke="white" strokeWidth="4" />
+              <path d="M48 62H52" stroke="white" strokeWidth="4" />
+              {/* Angle brackets inside lenses */}
+              <path d="M38 59L34 62L38 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M62 59L66 62L62 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              {/* Mustache */}
+              <path d="M33 76C43 76 47 70 50 74C53 70 57 76 67 76C73 76 76 72 76 72C76 72 70 82 50 82C30 82 24 72 24 72C24 72 27 76 33 76Z" fill="white" />
+            </svg>
           </div>
 
           {/* Floating Widget 1: Streak */}
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-4 left-6"
+            className="absolute top-4 left-4"
           >
             <div className="glass-card rounded-2xl p-3 border border-white/10 shadow-lg bg-[#0e0e15]/90 backdrop-blur flex items-center gap-3 w-44">
               <div className="h-8 w-8 rounded-lg bg-orange-600/10 flex items-center justify-center text-orange-500">
@@ -263,7 +277,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="absolute right-4 top-14"
+            className="absolute right-0 top-14"
           >
             <div className="glass-card rounded-2xl p-4 border border-white/10 shadow-lg bg-[#0e0e15]/95 backdrop-blur w-48 space-y-2.5">
               <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider">Leaderboard - This Week</p>
@@ -288,7 +302,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
-            className="absolute bottom-4 left-2"
+            className="absolute bottom-4 left-0"
           >
             <div className="glass-card rounded-2xl p-3 border border-white/10 shadow-lg bg-[#0e0e15]/90 backdrop-blur w-64 space-y-1">
               <div className="flex items-center justify-between border-b border-white/[0.03] pb-1.5">
@@ -308,7 +322,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-            className="absolute bottom-6 right-6"
+            className="absolute bottom-6 right-2"
           >
             <div className="px-3 py-1.5 rounded-full border border-white/10 bg-[#0e0e15]/95 shadow-md flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-[#ef4444] animate-pulse" />
@@ -406,7 +420,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Added Interactive Section: XP Calculator Slider */}
+      {/* Interactive Section: XP Calculator Slider */}
       <section className="max-w-6xl mx-auto px-6 py-16 border-t border-white/[0.03] relative z-10 text-center space-y-8 select-none">
         <div className="space-y-2">
           <p className="text-xs text-orange-500 font-bold uppercase tracking-wider">XP Calculator</p>
@@ -424,7 +438,6 @@ export default function LandingPage() {
               <span>Weekly Target Focus</span>
               <span className="text-orange-500">{focusHours} Hours</span>
             </div>
-            {/* Custom slider inputs */}
             <input
               type="range"
               min="5"
@@ -521,7 +534,6 @@ export default function LandingPage() {
             {/* Coach stats badge */}
             <Card className="p-4 border border-white/[0.04] bg-surface-900/20 flex items-center gap-4">
               <div className="h-10 w-10 rounded-full bg-surface-950 flex items-center justify-center text-orange-500 border border-white/5 overflow-hidden">
-                {/* avatar preview */}
                 <div className="h-9 w-9 rounded-full bg-orange-600/10 flex items-center justify-center text-orange-500 text-xs font-bold font-mono border border-orange-500/20">
                   H
                 </div>
@@ -555,7 +567,6 @@ export default function LandingPage() {
                       <span className="text-text-primary">{user.name}</span>
                       <span className="font-mono text-text-secondary text-[10px]">{user.score}</span>
                     </div>
-                    {/* Visual progress score bar */}
                     <div className="w-full h-1.5 rounded-full bg-surface-950 overflow-hidden">
                       <div className={`h-full rounded-full ${user.color.split(' ')[0]}`} style={{ width: `${(user.score / 650) * 100}%` }} />
                     </div>
@@ -567,7 +578,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Added Section: FAQ Accordion */}
+      {/* FAQ Accordion */}
       <section id="coaching" className="max-w-4xl mx-auto px-6 py-20 border-t border-white/[0.03] relative z-10 space-y-10 select-none">
         <div className="text-center space-y-2">
           <p className="text-xs text-orange-500 font-bold uppercase tracking-wider">Help Desk</p>
