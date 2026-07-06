@@ -1,91 +1,90 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { generateId } from '../utils/helpers';
+import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useAuth } from './AuthContext';
 
 const HabitContext = createContext(null);
-
-const STORAGE_KEY = 'productivityos_habits';
-
-const DEFAULT_HABITS = [];
 
 export function HabitProvider({ children }) {
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setHabits(JSON.parse(stored));
-      } catch (err) {
-        setHabits(DEFAULT_HABITS);
+  // Load habits from database
+  const fetchHabits = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await api.get('/habits');
+      if (res.success && res.habits) {
+        setHabits(res.habits);
       }
-    } else {
-      setHabits(DEFAULT_HABITS);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_HABITS));
+    } catch (err) {
+      console.error('Error fetching habits:', err);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
-  const saveHabits = (newHabits) => {
-    setHabits(newHabits);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newHabits));
-  };
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchHabits();
+    } else {
+      setHabits([]);
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, fetchHabits]);
 
-  const createHabit = useCallback((habitData) => {
-    const newHabit = {
-      id: `habit-${generateId()}`,
-      name: habitData.name,
-      icon: habitData.icon || '🎯',
-      color: habitData.color || 'cyan',
-      createdAt: new Date().toISOString(),
-      history: [],
-    };
-    saveHabits([...habits, newHabit]);
-    toast.success('Habit created successfully');
-    return newHabit;
-  }, [habits]);
-
-  const deleteHabit = useCallback((id) => {
-    const updatedHabits = habits.filter((h) => h.id !== id);
-    saveHabits(updatedHabits);
-    toast.success('Habit deleted');
-  }, [habits]);
-
-  const toggleHabitCheckIn = useCallback((id, dateStr) => {
-    const updatedHabits = habits.map((habit) => {
-      if (habit.id === id) {
-        const hasCheckedIn = habit.history.includes(dateStr);
-        let newHistory;
-        if (hasCheckedIn) {
-          newHistory = habit.history.filter((d) => d !== dateStr);
-        } else {
-          newHistory = [...habit.history, dateStr];
-          // Simple encouragement toast if checking in today
-          if (dateStr === new Date().toISOString().split('T')[0]) {
-            toast.success(`Check-in recorded for ${habit.name}! Keep it up`);
-          }
-        }
-        return {
-          ...habit,
-          history: newHistory,
-        };
+  const createHabit = useCallback(async (habitData) => {
+    try {
+      const res = await api.post('/habits', habitData);
+      if (res.success && res.habit) {
+        setHabits((prev) => [res.habit, ...prev]);
+        toast.success('Habit created successfully');
+        return res.habit;
       }
-      return habit;
-    });
-    saveHabits(updatedHabits);
-  }, [habits]);
+    } catch (err) {
+      toast.error(err.message || 'Error creating habit');
+      throw err;
+    }
+  }, []);
 
-  // Streak calculation helper (computes current consecutive streak backwards from today)
+  const deleteHabit = useCallback(async (id) => {
+    try {
+      const res = await api.delete(`/habits/${id}`);
+      if (res.success) {
+        setHabits((prev) => prev.filter((h) => h._id !== id && h.id !== id));
+        toast.success('Habit deleted successfully');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Error deleting habit');
+      throw err;
+    }
+  }, []);
+
+  const toggleHabitCheckIn = useCallback(async (id, dateStr) => {
+    try {
+      const res = await api.post(`/habits/${id}/toggle`, { date: dateStr });
+      if (res.success && res.habit) {
+        setHabits((prev) => prev.map((h) => (h._id === id || h.id === id ? res.habit : h)));
+        if (dateStr === new Date().toISOString().split('T')[0] && res.habit.history.includes(dateStr)) {
+          toast.success(`Check-in recorded for ${res.habit.name}! Keep it up`);
+        }
+      }
+    } catch (err) {
+      toast.error(err.message || 'Error toggling check-in');
+      throw err;
+    }
+  }, []);
+
+  // Streak calculation helper
   const getStreak = useCallback((habit) => {
+    if (!habit || !habit.history) return 0;
     const historySet = new Set(habit.history);
     let streak = 0;
     let checkDate = new Date();
     
-    // Format helper to ignore local timezone issues when going backwards
     const toYmd = (date) => date.toISOString().split('T')[0];
 
-    // If not checked in today, check if checked in yesterday. If not yesterday, streak is 0.
     let todayStr = toYmd(checkDate);
     if (!historySet.has(todayStr)) {
       checkDate.setDate(checkDate.getDate() - 1);
@@ -95,7 +94,6 @@ export function HabitProvider({ children }) {
       }
     }
 
-    // Go backwards day by day to count the streak
     while (historySet.has(toYmd(checkDate))) {
       streak++;
       checkDate.setDate(checkDate.getDate() - 1);

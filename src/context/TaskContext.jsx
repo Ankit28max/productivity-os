@@ -1,87 +1,92 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { TASK_STATUS, PRIORITY } from '../utils/constants';
-import { generateId } from '../utils/helpers';
+import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useAuth } from './AuthContext';
 
 const TaskContext = createContext(null);
-
-const STORAGE_KEY = 'productivityos_tasks';
-
-const DEFAULT_TASKS = [];
 
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
 
-  // Load initial tasks
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setTasks(JSON.parse(stored));
-      } catch (err) {
-        setTasks(DEFAULT_TASKS);
+  // Load tasks from backend database
+  const fetchTasks = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await api.get('/tasks');
+      if (res.success && res.tasks) {
+        setTasks(res.tasks);
       }
-    } else {
-      setTasks(DEFAULT_TASKS);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_TASKS));
+    } catch (err) {
+      console.error('Error fetching tasks:', err);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
-  // Save tasks helper
-  const saveTasks = (newTasks) => {
-    setTasks(newTasks);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newTasks));
-  };
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTasks();
+    } else {
+      setTasks([]);
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, fetchTasks]);
 
-  const createTask = useCallback((taskData) => {
-    const newTask = {
-      id: `task-${generateId()}`,
-      title: taskData.title,
-      description: taskData.description || '',
-      priority: taskData.priority || PRIORITY.MEDIUM,
-      status: taskData.status || TASK_STATUS.PENDING,
-      dueDate: taskData.dueDate || new Date().toISOString().split('T')[0],
-      category: taskData.category || 'General',
-      createdAt: new Date().toISOString(),
-    };
-
-    saveTasks([newTask, ...tasks]);
-    toast.success('Task created successfully');
-    return newTask;
-  }, [tasks]);
-
-  const updateTask = useCallback((id, updates) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        const merged = { ...task, ...updates };
-        if (updates.status === TASK_STATUS.COMPLETED && task.status !== TASK_STATUS.COMPLETED) {
-          toast.success('Task completed! Keep it up');
-        }
-        return merged;
+  const createTask = useCallback(async (taskData) => {
+    try {
+      const res = await api.post('/tasks', taskData);
+      if (res.success && res.task) {
+        setTasks((prev) => [res.task, ...prev]);
+        toast.success('Task created successfully');
+        return res.task;
       }
-      return task;
-    });
-    saveTasks(updatedTasks);
-  }, [tasks]);
+    } catch (err) {
+      toast.error(err.message || 'Error creating task');
+      throw err;
+    }
+  }, []);
 
-  const deleteTask = useCallback((id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    saveTasks(updatedTasks);
-    toast.success('Task deleted successfully');
-  }, [tasks]);
+  const updateTask = useCallback(async (id, updates) => {
+    try {
+      const res = await api.put(`/tasks/${id}`, updates);
+      if (res.success && res.task) {
+        setTasks((prev) => prev.map((t) => (t._id === id || t.id === id ? res.task : t)));
+        return res.task;
+      }
+    } catch (err) {
+      toast.error(err.message || 'Error updating task');
+      throw err;
+    }
+  }, []);
 
-  const toggleTaskStatus = useCallback((id) => {
-    const task = tasks.find((t) => t.id === id);
+  const deleteTask = useCallback(async (id) => {
+    try {
+      const res = await api.delete(`/tasks/${id}`);
+      if (res.success) {
+        setTasks((prev) => prev.filter((t) => t._id !== id && t.id !== id));
+        toast.success('Task deleted successfully');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Error deleting task');
+      throw err;
+    }
+  }, []);
+
+  const toggleTaskStatus = useCallback(async (id) => {
+    const task = tasks.find((t) => t._id === id || t.id === id);
     if (!task) return;
 
-    const newStatus =
-      task.status === TASK_STATUS.COMPLETED
-        ? TASK_STATUS.PENDING
-        : TASK_STATUS.COMPLETED;
-
-    updateTask(id, { status: newStatus });
+    const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+    try {
+      const updated = await updateTask(id, { status: newStatus });
+      if (updated && newStatus === 'completed') {
+        toast.success('Task completed! Keep it up');
+      }
+    } catch (err) {
+      console.error('Error toggling task status:', err);
+    }
   }, [tasks, updateTask]);
 
   const value = {
