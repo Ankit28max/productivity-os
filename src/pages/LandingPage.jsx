@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
+  HiOutlineSparkles,
   HiOutlineFire,
   HiOutlineChevronDown,
   HiOutlineSun,
@@ -47,7 +48,7 @@ export default function LandingPage() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   
-  // Interactive slider state for coder XP calculator
+  // Interactive slider state for calculator
   const [focusHours, setFocusHours] = useState(40);
   const [heatmapData] = useState(seedHeatmap());
   const [openFaq, setOpenFaq] = useState(null);
@@ -89,10 +90,10 @@ export default function LandingPage() {
 
   // Calculate XP rank based on slider hours
   const getXPRank = (hours) => {
-    if (hours < 20) return { rank: 'Code Novice', xp: hours * 100, color: 'text-text-secondary' };
+    if (hours < 20) return { rank: 'Focused Novice', xp: hours * 100, color: 'text-text-secondary' };
     if (hours < 60) return { rank: 'Telemetry Architect', xp: hours * 115, color: 'text-primary-400' };
-    if (hours < 90) return { rank: 'Algorithm Ninja', xp: hours * 130, color: 'text-secondary-400' };
-    return { rank: 'System Archmage', xp: hours * 150, color: 'text-orange-500' };
+    if (hours < 90) return { rank: 'Efficiency Ninja', xp: hours * 130, color: 'text-secondary-400' };
+    return { rank: 'Productivity Archmage', xp: hours * 150, color: 'text-orange-500' };
   };
 
   const { rank, xp, color: rankColor } = getXPRank(focusHours);
@@ -100,7 +101,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0c0c0e] text-[#f0f0ff] relative overflow-x-hidden font-sans select-none">
       
-      {/* Floating neon star particles in background */}
+      {/* Floating particles in background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {particles.map((p) => (
           <motion.div
@@ -125,7 +126,7 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* Decorative ambient sunset orange/amber color blurs */}
+      {/* Decorative ambient color blur shapes */}
       <div className="absolute top-[10%] left-[-15%] w-[600px] h-[600px] rounded-full blur-[150px] opacity-15 pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(234,88,12,0.15) 0%, transparent 65%)' }}
       />
@@ -133,42 +134,29 @@ export default function LandingPage() {
         style={{ background: 'radial-gradient(circle, rgba(217,119,6,0.12) 0%, transparent 65%)' }}
       />
 
-      {/* NAVBAR MATCHING SCREENSHOT EXACTLY (STYLING & MOCK LINKS) */}
+      {/* FIXED TOP NAVBAR */}
       <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[#0c0c0e] border-b border-white/[0.03] flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto">
-        {/* Left: SVG Mascot logo (MUSTACHE MAN) */}
-        <div className="flex items-center">
-          <svg className="h-9 w-9 text-white select-none cursor-pointer" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleLaunchApp}>
-            {/* Turban shape */}
-            <path d="M50 15C32 15 22 28 22 42C22 45 23 48 25 50C29 45 35 40 45 42C48 38 52 38 55 42C65 40 71 45 75 50C77 48 78 45 78 42C78 28 68 15 50 15Z" fill="white" />
-            {/* Diagonal stripes on turban */}
-            <path d="M30 20L45 35M40 16L60 36M52 15L70 33" stroke="#0c0c0e" strokeWidth="2.5" strokeLinecap="round" />
-            {/* Orange forehead bindi */}
-            <circle cx="50" cy="46" r="4.5" fill="#ea580c" />
-            {/* Glasses frames */}
-            <circle cx="36" cy="62" r="12" stroke="white" strokeWidth="4" />
-            <circle cx="64" cy="62" r="12" stroke="white" strokeWidth="4" />
-            <path d="M48 62H52" stroke="white" strokeWidth="4" />
-            {/* Angle brackets inside lenses */}
-            <path d="M38 59L34 62L38 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M62 59L66 62L62 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            {/* Mustache */}
-            <path d="M33 76C43 76 47 70 50 74C53 70 57 76 67 76C73 76 76 72 76 72C76 72 70 82 50 82C30 82 24 72 24 72C24 72 27 76 33 76Z" fill="white" />
-          </svg>
+        {/* Left Logo (ProductivityOS Spark Icon + text) */}
+        <div className="flex items-center gap-2 select-none cursor-pointer" onClick={handleLaunchApp}>
+          <div className="h-7 w-7 rounded-lg bg-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <HiOutlineSparkles className="h-4.5 w-4.5 text-white" />
+          </div>
+          <span className="font-extrabold text-sm text-text-primary tracking-tight">ProductivityOS</span>
         </div>
 
-        {/* Center navigation links matches screenshot exactly */}
+        {/* Center navigation links */}
         <nav className="hidden md:flex items-center gap-9">
           <a href="#features" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Hackathons
+            Features
           </a>
           <a href="#consistency" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Quiz
+            Heatmap
           </a>
           <a href="#telemetry" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Stories
+            Telemetry
           </a>
           <a href="#coaching" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Courses
+            AI Coach
           </a>
         </nav>
 
@@ -200,8 +188,8 @@ export default function LandingPage() {
         {/* Left Panel */}
         <div className="lg:col-span-6 space-y-6 text-left">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.08] text-text-primary">
-            Practice never <br />
-            feels lonely <span className="relative inline-block italic text-orange-500 font-extrabold pr-2">
+            Staying focused <br />
+            never feels lonely <span className="relative inline-block italic text-orange-500 font-extrabold pr-2">
               here
               {/* Underline SVG */}
               <svg className="absolute left-0 bottom-[-6px] w-full h-2 text-orange-500" viewBox="0 0 100 10" preserveAspectRatio="none">
@@ -219,41 +207,37 @@ export default function LandingPage() {
               onClick={handleLaunchApp}
               className="px-5 py-2.5 rounded-full text-xs font-bold text-dark-950 bg-white hover:bg-white/90 transition-all shadow-[0_4px_16px_rgba(255,255,255,0.15)] flex items-center gap-1.5 cursor-pointer"
             >
-              Start Learning
+              Start Tracking
             </button>
             <button
               onClick={handleLaunchApp}
               className="px-5 py-2.5 rounded-full text-xs font-bold text-text-primary bg-surface-900/40 border border-white/[0.06] hover:bg-surface-800/50 hover:border-white/12 transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              Download App
+              Explore Workspace
             </button>
           </div>
         </div>
 
-        {/* Right Panel: Large glowing mascot and floating widgets matching screenshot */}
+        {/* Right Panel: ProductivityOS central HUD and floating widgets */}
         <div className="lg:col-span-6 relative flex items-center justify-center min-h-[440px]">
-          {/* Faint orange glow backdrop behind mascot */}
+          {/* Faint orange glow backdrop */}
           <div className="absolute h-80 w-80 rounded-full bg-orange-600/10 filter blur-3xl" />
           
           <div className="relative h-[320px] w-[320px] flex items-center justify-center">
-            {/* SVG Mascot logo (MUSTACHE MAN) rendering in large high-fidelity center-right */}
-            <svg className="h-[280px] w-[280px] text-white drop-shadow-[0_0_35px_rgba(255,255,255,0.12)] select-none" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Turban */}
-              <path d="M50 15C32 15 22 28 22 42C22 45 23 48 25 50C29 45 35 40 45 42C48 38 52 38 55 42C65 40 71 45 75 50C77 48 78 45 78 42C78 28 68 15 50 15Z" fill="white" />
-              {/* Stripes */}
-              <path d="M30 20L45 35M40 16L60 36M52 15L70 33" stroke="#0c0c0e" strokeWidth="2.5" strokeLinecap="round" />
-              {/* Bindi forehead dot */}
-              <circle cx="50" cy="46" r="4.5" fill="#ea580c" />
-              {/* Glasses */}
-              <circle cx="36" cy="62" r="12" stroke="white" strokeWidth="4" />
-              <circle cx="64" cy="62" r="12" stroke="white" strokeWidth="4" />
-              <path d="M48 62H52" stroke="white" strokeWidth="4" />
-              {/* Angle brackets inside lenses */}
-              <path d="M38 59L34 62L38 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M62 59L66 62L62 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              {/* Mustache */}
-              <path d="M33 76C43 76 47 70 50 74C53 70 57 76 67 76C73 76 76 72 76 72C76 72 70 82 50 82C30 82 24 72 24 72C24 72 27 76 33 76Z" fill="white" />
-            </svg>
+            {/* Spinning HUD radar geometry */}
+            <div className="absolute inset-0 rounded-full border border-orange-500/15 animate-spin" style={{ animationDuration: '14s' }} />
+            <div className="absolute inset-6 rounded-full border border-dashed border-white/5 animate-spin" style={{ animationDuration: '9s', animationDirection: 'reverse' }} />
+            <div className="absolute inset-12 rounded-full border border-orange-500/5" />
+            
+            {/* Glowing Brand Spark Circle */}
+            <div className="h-44 w-44 rounded-full bg-surface-950/80 border border-white/10 flex items-center justify-center shadow-2xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-secondary-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="text-center z-10 select-none">
+                <HiOutlineSparkles className="h-12 w-12 text-orange-500 mx-auto animate-pulse" />
+                <p className="text-[10px] font-bold tracking-wider text-text-primary uppercase mt-3">CONSOLE ACTIVE</p>
+                <p className="text-[8px] font-mono text-text-muted mt-1">v1.0.0 // DB_OK</p>
+              </div>
+            </div>
           </div>
 
           {/* Floating Widget 1: Streak */}
@@ -308,12 +292,12 @@ export default function LandingPage() {
               <div className="flex items-center justify-between border-b border-white/[0.03] pb-1.5">
                 <div className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                  <span className="text-[9px] font-bold text-text-primary">Hitesh reviewed</span>
+                  <span className="text-[9px] font-bold text-text-primary">AI Coach reviewed</span>
                 </div>
-                <span className="text-[8px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">+12 XP</span>
+                <span className="text-[8px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">+15 XP</span>
               </div>
               <p className="text-[9.5px] font-mono text-text-secondary leading-normal">
-                "Clean recursion. Try memoizing the helper - we go from O(2ⁿ) to O(n)."
+                "Focus session completed. Break down the next milestone into smaller checkpoints."
               </p>
             </div>
           </motion.div>
@@ -325,8 +309,8 @@ export default function LandingPage() {
             className="absolute bottom-6 right-2"
           >
             <div className="px-3 py-1.5 rounded-full border border-white/10 bg-[#0e0e15]/95 shadow-md flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#ef4444] animate-pulse" />
-              <span className="text-[9px] font-bold text-text-secondary tracking-wide uppercase">Live Quiz - 384 in</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
+              <span className="text-[9px] font-bold text-text-secondary tracking-wide uppercase">Active Users - 384 online</span>
             </div>
           </motion.div>
         </div>
@@ -336,7 +320,7 @@ export default function LandingPage() {
       <section id="features" className="max-w-6xl mx-auto px-6 py-24 border-t border-white/[0.03] relative z-10 text-center space-y-12">
         <div className="space-y-3">
           <h2 className="text-xl md:text-3xl font-extrabold text-text-primary tracking-tight max-w-3xl mx-auto leading-relaxed">
-            Skip a day, your community pulls you back. Solve a hard one, your community celebrates.
+            Skip a day, your tracker flags it. Complete a habit, your analytics celebrate.
           </h2>
         </div>
 
@@ -344,9 +328,9 @@ export default function LandingPage() {
           {/* Left Card: Avatars List */}
           <Card className="p-6 border border-white/[0.04] bg-surface-900/20 flex flex-col justify-between min-h-[320px]">
             <div>
-              <h3 className="text-base font-bold text-text-primary">A community that shows up</h3>
+              <h3 className="text-base font-bold text-text-primary">A workspace that adapts</h3>
               <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
-                Town halls with Voice Rooms. Peer reviews on every submission. The chat never goes quiet, because someone is also stuck on the same problem.
+                Connect check-ins, habit targets, and calendar grids. The telemetry console logs your actions in real-time.
               </p>
             </div>
 
@@ -362,15 +346,15 @@ export default function LandingPage() {
                   </div>
                 ))}
                 <span className="text-[10px] text-text-secondary font-bold ml-4 tracking-wide uppercase">
-                  50,000+ Coders
+                  12,000+ Active Users
                 </span>
               </div>
-              <p className="text-[10px] text-text-muted font-semibold tracking-wide">HACKATHON - 40 VOICE ROOMS LIVE</p>
+              <p className="text-[10px] text-text-muted font-semibold tracking-wide">TELEMETRY - 40 FOCUS SESSIONS LIVE</p>
             </div>
 
             <div className="px-3.5 py-2.5 rounded-xl bg-surface-950/40 border border-white/[0.02] w-fit font-mono text-[9.5px] text-text-secondary">
               <span className="text-orange-400 font-bold">&gt; Aman: </span>
-              "memoize the helper, O(n) instead"
+              "completed task: build UI context layout"
             </div>
           </Card>
 
@@ -465,10 +449,10 @@ export default function LandingPage() {
       <section id="telemetry" className="max-w-6xl mx-auto px-6 py-20 border-t border-white/[0.03] relative z-10 text-center space-y-12">
         <div className="space-y-3">
           <h2 className="text-xl md:text-3xl font-extrabold text-text-primary tracking-tight max-w-2xl mx-auto">
-            Live quizzes that move with the room.
+            Interactive checklists that move with your goals.
           </h2>
           <p className="text-xs text-text-secondary max-w-xl mx-auto leading-relaxed">
-            Your host runs the question, word clouds, leaderboards, score deltas. The most interactive quiz format, built for cohort live classes.
+            Your AI coach runs checks, suggestions, and milestones targets. Track your focus sessions metrics and watch your consistency score rise.
           </p>
         </div>
 
@@ -486,18 +470,18 @@ export default function LandingPage() {
             <div className="space-y-4">
               <div>
                 <h4 className="text-sm font-bold text-text-primary leading-snug">
-                  What does <code className="text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded font-mono">setTimeout</code> inside a for loop log?
+                  How do you prioritize high-urgency, low-importance tasks in the Eisenhower Matrix?
                 </h4>
-                <p className="text-[10px] text-text-secondary mt-1 font-semibold">Asked by Hitesh · Web Dev Cohort 26 · 10s left</p>
+                <p className="text-[10px] text-text-secondary mt-1 font-semibold">Asked by AI Coach · Productivity OS · 10s left</p>
               </div>
 
               {/* Multiple choice options progress */}
               <div className="space-y-2.5">
                 {[
-                  { key: 'A', label: 'Closure captures variables', percent: 18, active: true },
-                  { key: 'B', label: 'Loop scope', percent: 3, active: false },
-                  { key: 'C', label: 'Class bin...', percent: 2, active: false },
-                  { key: 'D', label: 'Promise..', percent: 2, active: false }
+                  { key: 'A', label: 'Delegate task check-ins to other tools', percent: 82, active: true },
+                  { key: 'B', label: 'Do it immediately', percent: 12, active: false },
+                  { key: 'C', label: 'Eliminate from checklist', percent: 4, active: false },
+                  { key: 'D', label: 'Postpone for next sprint', percent: 2, active: false }
                 ].map((opt, idx) => (
                   <div
                     key={idx}
@@ -535,15 +519,15 @@ export default function LandingPage() {
             <Card className="p-4 border border-white/[0.04] bg-surface-900/20 flex items-center gap-4">
               <div className="h-10 w-10 rounded-full bg-surface-950 flex items-center justify-center text-orange-500 border border-white/5 overflow-hidden">
                 <div className="h-9 w-9 rounded-full bg-orange-600/10 flex items-center justify-center text-orange-500 text-xs font-bold font-mono border border-orange-500/20">
-                  H
+                  AI
                 </div>
               </div>
               <div className="flex-1">
-                <p className="text-xs font-bold text-text-primary">Hitesh <span className="text-[9px] font-bold text-orange-500 ml-1.5 uppercase bg-orange-500/10 px-1.5 py-0.5 rounded">host</span></p>
-                <p className="text-[9px] text-text-muted mt-0.5">Web Dev Cohort 26</p>
+                <p className="text-xs font-bold text-text-primary">AI Coach <span className="text-[9px] font-bold text-orange-500 ml-1.5 uppercase bg-orange-500/10 px-1.5 py-0.5 rounded">helper</span></p>
+                <p className="text-[9px] text-text-muted mt-0.5">Productivity OS</p>
               </div>
               <div className="text-right border-l border-white/[0.04] pl-4 font-mono select-none">
-                <p className="text-[8px] text-text-muted uppercase">Live Users</p>
+                <p className="text-[8px] text-text-muted uppercase">Active Users</p>
                 <p className="text-xs font-bold text-text-primary">449</p>
               </div>
             </Card>
