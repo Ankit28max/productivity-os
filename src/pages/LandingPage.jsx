@@ -301,8 +301,8 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-left">
-          {/* Left Card */}
-          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[320px]">
+          {/* Left Card: A Workspace That Adapts */}
+          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[380px] hover:border-orange-500/20 transition-all duration-300">
             <div>
               <h3 className="text-base font-bold text-text-primary">A workspace that adapts</h3>
               <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
@@ -310,12 +310,46 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="py-6 space-y-4">
+            {/* INTEGRATIONS DOCK: Fills empty middle space with premium UI widgets */}
+            <div className="py-4 grid grid-cols-3 gap-3">
+              <div className="p-2.5 rounded-xl bg-surface-900/50 border border-border-default flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-mono text-text-muted">VS CODE</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
+                </div>
+                <p className="text-xs font-bold text-text-primary">4.2 hrs logged</p>
+                <div className="w-full h-1 bg-surface-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-orange-500 w-[70%]" />
+                </div>
+              </div>
+              <div className="p-2.5 rounded-xl bg-surface-900/50 border border-border-default flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-mono text-text-muted">GITHUB</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
+                <p className="text-xs font-bold text-text-primary">12 commits</p>
+                <div className="w-full h-1 bg-surface-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 w-[85%]" />
+                </div>
+              </div>
+              <div className="p-2.5 rounded-xl bg-surface-900/50 border border-border-default flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-mono text-text-muted">TERMINAL</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                </div>
+                <p className="text-xs font-bold text-text-primary">Active shell</p>
+                <div className="w-full h-1 bg-surface-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 w-[40%]" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
               <div className="flex items-center pl-2">
                 {['A', 'S', 'N', 'Y', 'H'].map((initial, idx) => (
                   <div
                     key={idx}
-                    className="h-10 w-10 rounded-full border-2 border-dark-950 bg-surface-700 flex items-center justify-center text-xs font-bold text-text-primary -ml-2.5 shadow-md"
+                    className="h-9 w-9 rounded-full border-2 border-dark-950 bg-surface-700 flex items-center justify-center text-xs font-bold text-text-primary -ml-2.5 shadow-md"
                     style={{ zIndex: 5 - idx }}
                   >
                     {initial}
@@ -328,14 +362,14 @@ export default function LandingPage() {
               <p className="text-[10px] text-text-muted font-semibold tracking-wide">TELEMETRY - 40 FOCUS SESSIONS LIVE</p>
             </div>
 
-            <div className="px-3.5 py-2.5 rounded-xl bg-surface-900/40 border border-border-default w-fit font-mono text-[9.5px] text-text-secondary">
+            <div className="px-3.5 py-2.5 rounded-xl bg-surface-900/40 border border-border-default w-fit font-mono text-[9.5px] text-text-secondary mt-2">
               <span className="text-orange-400 font-bold">&gt; Aman: </span>
               "completed task: build UI context layout"
             </div>
           </Card>
 
-          {/* Right Card: heatmap */}
-          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[320px]">
+          {/* Right Card: consistency heatmap & stats summary */}
+          <Card className="p-6 border border-border-subtle bg-surface-800/40 flex flex-col justify-between min-h-[380px] hover:border-orange-500/20 transition-all duration-300">
             <div>
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-text-primary">Consistency that compounds</h3>
@@ -348,22 +382,26 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div id="consistency" className="py-5 select-none overflow-x-auto">
-              <p className="text-[8px] font-bold text-text-muted uppercase mb-2">Last Seven Weeks</p>
+            {/* Expanded Heatmap Grid (38 Columns to fill width) */}
+            <div id="consistency" className="py-3 select-none overflow-x-auto">
+              <p className="text-[8px] font-bold text-text-muted uppercase mb-2">Last Ten Weeks</p>
               <div className="grid grid-flow-col gap-1 w-fit">
-                {heatmapData.map((row, rIdx) => (
+                {Array.from({ length: 7 }).map((_, rIdx) => (
                   <div key={rIdx} className="grid gap-1">
-                    {row.map((intensity, cIdx) => (
-                      <div
-                        key={cIdx}
-                        className={`h-2.5 w-2.5 rounded-sm transition-colors duration-300 ${getHeatmapColor(intensity)}`}
-                        title={`Check-in day score: ${intensity}`}
-                      />
-                    ))}
+                    {Array.from({ length: 38 }).map((_, cIdx) => {
+                      const randomIntensity = Math.floor(Math.random() * 5);
+                      return (
+                        <div
+                          key={cIdx}
+                          className={`h-2.5 w-2.5 rounded-sm transition-colors duration-300 ${getHeatmapColor(randomIntensity)}`}
+                          title={`Check-in intensity score: ${randomIntensity}`}
+                        />
+                      );
+                    })}
                   </div>
                 ))}
               </div>
-              <div className="flex items-center justify-between text-[8.5px] text-text-muted font-mono mt-3 max-w-[270px]">
+              <div className="flex items-center justify-between text-[8.5px] text-text-muted font-mono mt-2 max-w-[270px]">
                 <span>Less</span>
                 <div className="flex gap-1">
                   {[0, 1, 2, 3, 4].map((i) => (
@@ -371,6 +409,22 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <span>More</span>
+              </div>
+            </div>
+
+            {/* Consistency Stats Summary: Fills remaining space beautifully */}
+            <div className="grid grid-cols-3 gap-2 border-t border-border-default pt-3 mt-2 select-none">
+              <div>
+                <p className="text-[8px] font-bold text-text-muted uppercase">Total Check-ins</p>
+                <p className="text-sm font-extrabold text-text-primary mt-0.5">854 days</p>
+              </div>
+              <div>
+                <p className="text-[8px] font-bold text-text-muted uppercase">Intensity Avg</p>
+                <p className="text-sm font-extrabold text-orange-500 mt-0.5">High</p>
+              </div>
+              <div>
+                <p className="text-[8px] font-bold text-text-muted uppercase">Targets Met</p>
+                <p className="text-sm font-extrabold text-text-primary mt-0.5">88.4%</p>
               </div>
             </div>
           </Card>
