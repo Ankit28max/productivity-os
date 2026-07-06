@@ -198,20 +198,23 @@ export default function LandingPage() {
         </div>
 
         {/* Right Panel: HUD and floating widgets */}
-        <div className="lg:col-span-6 relative flex items-center justify-center min-h-[440px]">
-          <div className="absolute h-80 w-80 rounded-full bg-orange-600/10 filter blur-3xl" />
+        <div className="lg:col-span-6 relative flex items-center justify-center min-h-[360px] sm:min-h-[440px]">
+          {/* Faint orange glow backdrop */}
+          <div className="absolute h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-orange-600/10 filter blur-3xl" />
           
-          <div className="relative h-[320px] w-[320px] flex items-center justify-center">
+          <div className="relative h-[280px] w-[280px] sm:h-[320px] sm:w-[320px] flex items-center justify-center scale-90 sm:scale-100 transition-all duration-300">
+            {/* Spinning HUD radar geometry */}
             <div className="absolute inset-0 rounded-full border border-orange-500/15 animate-spin" style={{ animationDuration: '14s' }} />
-            <div className="absolute inset-6 rounded-full border border-dashed border-border-default animate-spin" style={{ animationDuration: '9s', animationDirection: 'reverse' }} />
-            <div className="absolute inset-12 rounded-full border border-orange-500/5" />
+            <div className="absolute inset-4 sm:inset-6 rounded-full border border-dashed border-border-default animate-spin" style={{ animationDuration: '9s', animationDirection: 'reverse' }} />
+            <div className="absolute inset-8 sm:inset-12 rounded-full border border-orange-500/5" />
             
-            <div className="h-44 w-44 rounded-full bg-surface-800/80 border border-border-subtle flex items-center justify-center shadow-2xl relative overflow-hidden group">
+            {/* Glowing Brand Spark Circle */}
+            <div className="h-36 w-36 sm:h-44 sm:w-44 rounded-full bg-surface-800/80 border border-border-subtle flex items-center justify-center shadow-2xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-secondary-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="text-center z-10 select-none">
-                <HiOutlineSparkles className="h-12 w-12 text-orange-500 mx-auto animate-pulse" />
-                <p className="text-[10px] font-bold tracking-wider text-text-primary uppercase mt-3">CONSOLE ACTIVE</p>
-                <p className="text-[8px] font-mono text-text-muted mt-1">v1.0.0 // DB_OK</p>
+                <HiOutlineSparkles className="h-10 w-10 sm:h-12 sm:w-12 text-orange-500 mx-auto animate-pulse" />
+                <p className="text-[9px] sm:text-[10px] font-bold tracking-wider text-text-primary uppercase mt-2 sm:mt-3">CONSOLE ACTIVE</p>
+                <p className="text-[7px] sm:text-[8px] font-mono text-text-muted mt-1">v1.0.0 // DB_OK</p>
               </div>
             </div>
           </div>
@@ -220,7 +223,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-4 left-4"
+            className="hidden sm:block absolute top-4 left-4"
           >
             <div className="glass-card rounded-2xl p-3 shadow-lg flex items-center gap-3 w-44">
               <div className="h-8 w-8 rounded-lg bg-orange-600/10 flex items-center justify-center text-orange-500">
@@ -237,7 +240,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="absolute right-0 top-14"
+            className="hidden sm:block absolute right-0 top-14"
           >
             <div className="glass-card rounded-2xl p-4 shadow-lg w-48 space-y-2.5">
               <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider">Leaderboard - This Week</p>
@@ -262,7 +265,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
-            className="absolute bottom-4 left-0"
+            className="hidden sm:block absolute bottom-4 left-0"
           >
             <div className="glass-card rounded-2xl p-3 shadow-lg w-64 space-y-1">
               <div className="flex items-center justify-between border-b border-border-default pb-1.5">
@@ -282,7 +285,7 @@ export default function LandingPage() {
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-            className="absolute bottom-6 right-2"
+            className="hidden sm:block absolute bottom-6 right-2"
           >
             <div className="px-3 py-1.5 rounded-full border border-border-subtle glass-card shadow-md flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
