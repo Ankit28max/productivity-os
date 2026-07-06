@@ -56,6 +56,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`ProductivityOS backend server listening on port ${PORT}...`);
-});
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`ProductivityOS backend server listening on port ${PORT}...`);
+  });
+}
+
+module.exports = app;
