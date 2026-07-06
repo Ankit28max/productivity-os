@@ -23,37 +23,37 @@ export default function App() {
                   </GoalProvider>
                 </HabitProvider>
               </NoteProvider>
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 3000,
-                style: {
-                  background: 'var(--bg-surface)',
-                  backdropFilter: 'blur(12px)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: '16px',
-                  fontSize: '13px',
-                  boxShadow: 'var(--glass-card-shadow)',
-                },
-                success: {
-                  iconTheme: {
-                    primary: '#ea580c',
-                    secondary: 'var(--text-primary)',
-                  },
-                },
-                error: {
-                  iconTheme: {
-                    primary: '#f43f5e',
-                    secondary: 'var(--text-primary)',
-                  },
-                },
-              }}
-            />
-          </TaskProvider>
-        </SidebarProvider>
-      </AuthProvider>
+            </TaskProvider>
+          </SidebarProvider>
+        </AuthProvider>
       </ThemeProvider>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: 'var(--bg-surface)',
+            backdropFilter: 'blur(12px)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-default)',
+            borderRadius: '16px',
+            fontSize: '13px',
+            boxShadow: 'var(--glass-card-shadow)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#ea580c',
+              secondary: 'var(--text-primary)',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#f43f5e',
+              secondary: 'var(--text-primary)',
+            },
+          },
+        }}
+      />
     </BrowserRouter>
   );
 }
