@@ -1,87 +1,95 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import api from '../services/api';
 
 const AuthContext = createContext(null);
-
-const MOCK_USER = {
-  id: 'user_001',
-  name: 'Ankit',
-  email: 'ankit@productivityos.dev',
-  avatar: null,
-  createdAt: new Date().toISOString(),
-};
-
 const AUTH_STORAGE_KEY = 'productivityos_auth';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Validate session on load
   useEffect(() => {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
+    const fetchUser = async () => {
+      const token = localStorage.getItem('productivityos_token');
+      if (token) {
+        try {
+          const res = await api.get('/auth/user');
+          if (res.success && res.user) {
+            setUser(res.user);
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(res.user));
+          } else {
+            // Clear invalid session
+            localStorage.removeItem('productivityos_token');
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            setUser(null);
+          }
+        } catch (err) {
+          // Offline fallback
+          const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+          if (stored) {
+            try {
+              setUser(JSON.parse(stored));
+            } catch {
+              setUser(null);
+            }
+          }
+        }
+      } else {
+        setUser(null);
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    fetchUser();
   }, []);
 
   const login = useCallback(async (email, password) => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    if (!email || !password) {
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      if (res.success && res.token) {
+        localStorage.setItem('productivityos_token', res.token);
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(res.user));
+        setUser(res.user);
+        return res.user;
+      } else {
+        throw new Error(res.message || 'Login failed');
+      }
+    } catch (err) {
+      throw err;
+    } finally {
       setIsLoading(false);
-      throw new Error('Email and password are required');
     }
-
-    const emailPrefix = email.split('@')[0];
-    const parsedName = emailPrefix
-      .split(/[._-]/)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ');
-
-    const userData = { 
-      ...MOCK_USER, 
-      name: parsedName, 
-      email 
-    };
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
-    setUser(userData);
-    setIsLoading(false);
-    return userData;
   }, []);
 
   const signup = useCallback(async (name, email, password) => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    if (!name || !email || !password) {
+    try {
+      const res = await api.post('/auth/register', { name, email, password });
+      if (res.success && res.token) {
+        localStorage.setItem('productivityos_token', res.token);
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(res.user));
+        setUser(res.user);
+        return res.user;
+      } else {
+        throw new Error(res.message || 'Registration failed');
+      }
+    } catch (err) {
+      throw err;
+    } finally {
       setIsLoading(false);
-      throw new Error('All fields are required');
     }
-
-    if (password.length < 6) {
-      setIsLoading(false);
-      throw new Error('Password must be at least 6 characters');
-    }
-
-    const userData = { ...MOCK_USER, name, email };
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
-    setUser(userData);
-    setIsLoading(false);
-    return userData;
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem('productivityos_token');
     localStorage.removeItem(AUTH_STORAGE_KEY);
     setUser(null);
   }, []);
 
   const updateProfile = useCallback((updates) => {
-    setUser(prev => {
+    setUser((prev) => {
       const updated = { ...prev, ...updates };
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updated));
       return updated;
