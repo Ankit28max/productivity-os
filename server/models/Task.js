@@ -30,7 +30,7 @@ const TaskSchema = new mongoose.Schema(
     },
     dueDate: {
       type: String, // Stored as YYYY-MM-DD
-      required: true,
+      default: null,
     },
     category: {
       type: String,
