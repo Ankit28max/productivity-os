@@ -28,24 +28,24 @@ export default function App() {
               toastOptions={{
                 duration: 3000,
                 style: {
-                  background: 'rgba(19, 19, 43, 0.85)',
+                  background: 'var(--bg-surface)',
                   backdropFilter: 'blur(12px)',
-                  color: '#f0f0ff',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-default)',
                   borderRadius: '16px',
-                  fontSize: '14px',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+                  fontSize: '13px',
+                  boxShadow: 'var(--glass-card-shadow)',
                 },
                 success: {
                   iconTheme: {
-                    primary: '#06b6d4',
-                    secondary: '#f0f0ff',
+                    primary: '#ea580c',
+                    secondary: 'var(--text-primary)',
                   },
                 },
                 error: {
                   iconTheme: {
                     primary: '#f43f5e',
-                    secondary: '#f0f0ff',
+                    secondary: 'var(--text-primary)',
                   },
                 },
               }}
