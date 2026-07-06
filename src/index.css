@@ -431,3 +431,50 @@ body {
   background: rgba(6, 182, 212, 0.3);
   color: #f0f0ff;
 }
+
+/* ============================================
+   Futuristic Cyber Telemetry Effects
+   ============================================ */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(var(--border-default) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-default) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+}
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(6, 182, 212, 0.01) 48%,
+    rgba(6, 182, 212, 0.35) 50%,
+    rgba(6, 182, 212, 0.01) 52%,
+    transparent 60%
+  );
+  pointer-events: none;
+  transition: top 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 2;
+}
+
+.glass-card:hover::after {
+  top: 150%;
+}
