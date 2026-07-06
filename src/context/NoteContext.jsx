@@ -8,28 +8,7 @@ const NoteContext = createContext(null);
 
 const STORAGE_KEY = 'productivityos_notes';
 
-const DEFAULT_NOTES = [
-  {
-    id: 'n-1',
-    title: 'ProductivityOS Project Architecture',
-    content: '## Frontend Tech Stack\n- React 19 + Vite\n- Tailwind CSS v4\n- Framer Motion\n- Recharts\n\n## Backend Tech Stack\n- Node.js + Express\n- MongoDB + Mongoose\n\nUse standard MVC pattern and modular folder structure.',
-    tags: ['Work', 'Architecture'],
-    isPinned: true,
-    isArchived: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'n-2',
-    title: 'Weekly Grocery List',
-    content: '- Spinach & Kale\n- Almond Milk\n- Avocados\n- Greek Yogurt\n- Protein powder (vanilla)',
-    tags: ['Personal', 'Health'],
-    isPinned: false,
-    isArchived: false,
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-];
+const DEFAULT_NOTES = [];
 
 export function NoteProvider({ children }) {
   const [notes, setNotes] = useState([]);

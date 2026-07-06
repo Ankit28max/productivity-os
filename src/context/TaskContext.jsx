@@ -7,48 +7,7 @@ const TaskContext = createContext(null);
 
 const STORAGE_KEY = 'productivityos_tasks';
 
-const DEFAULT_TASKS = [
-  {
-    id: 't-1',
-    title: 'Review project proposal',
-    description: 'Go through the Q3 planning document and leave comments on requirements.',
-    priority: PRIORITY.HIGH,
-    status: TASK_STATUS.IN_PROGRESS,
-    dueDate: new Date().toISOString().split('T')[0],
-    category: 'Work',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 't-2',
-    title: 'Update design system docs',
-    description: 'Document the new Nebula glassmorphism theme components and color guidelines.',
-    priority: PRIORITY.MEDIUM,
-    status: TASK_STATUS.PENDING,
-    dueDate: new Date().toISOString().split('T')[0],
-    category: 'Design',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 't-3',
-    title: 'Team standup meeting',
-    description: 'Weekly sync with design and development teams.',
-    priority: PRIORITY.HIGH,
-    status: TASK_STATUS.COMPLETED,
-    dueDate: new Date().toISOString().split('T')[0],
-    category: 'Work',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 't-4',
-    title: 'Code review: Auth module',
-    description: 'Review the backend integration pull request for token refresh logic.',
-    priority: PRIORITY.MEDIUM,
-    status: TASK_STATUS.PENDING,
-    dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
-    category: 'Development',
-    createdAt: new Date().toISOString(),
-  },
-];
+const DEFAULT_TASKS = [];
 
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);

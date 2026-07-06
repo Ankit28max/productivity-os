@@ -6,48 +6,7 @@ const HabitContext = createContext(null);
 
 const STORAGE_KEY = 'productivityos_habits';
 
-const DEFAULT_HABITS = [
-  {
-    id: 'h-1',
-    name: 'Morning Exercise',
-    icon: '🏃',
-    color: 'lime',
-    createdAt: new Date(Date.now() - 15 * 86400000).toISOString(),
-    history: [
-      new Date().toISOString().split('T')[0],
-      new Date(Date.now() - 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 4 * 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 5 * 86400000).toISOString().split('T')[0],
-    ],
-  },
-  {
-    id: 'h-2',
-    name: 'Read 30 mins',
-    icon: '📚',
-    color: 'cyan',
-    createdAt: new Date(Date.now() - 10 * 86400000).toISOString(),
-    history: [
-      new Date(Date.now() - 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 4 * 86400000).toISOString().split('T')[0],
-    ],
-  },
-  {
-    id: 'h-3',
-    name: 'Meditate',
-    icon: '🧘',
-    color: 'violet',
-    createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
-    history: [
-      new Date().toISOString().split('T')[0],
-      new Date(Date.now() - 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-      new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-    ],
-  },
-];
+const DEFAULT_HABITS = [];
 
 export function HabitProvider({ children }) {
   const [habits, setHabits] = useState([]);

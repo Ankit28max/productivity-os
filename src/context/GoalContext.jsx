@@ -6,49 +6,7 @@ const GoalContext = createContext(null);
 
 const STORAGE_KEY = 'productivityos_goals';
 
-const DEFAULT_GOALS = [
-  {
-    id: 'g-1',
-    title: 'Launch ProductivityOS Portfolio',
-    description: 'Complete and deploy ProductivityOS to showcase design systems, React, and Gemini AI integration.',
-    category: 'Career',
-    targetDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
-    milestones: [
-      { id: 'm-1-1', title: 'Complete visual redesign and dashboard cards', completed: true },
-      { id: 'm-1-2', title: 'Build interactive Calendar & Recharts Analytics page', completed: true },
-      { id: 'm-1-3', title: 'Integrate live Gemini API chat features', completed: false },
-      { id: 'm-1-4', title: 'Scaffold Node.js backend schemas & setup README documentation', completed: false }
-    ],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'g-2',
-    title: 'Run a 10K Marathon',
-    description: 'Train consistently to build stamina and run a full 10k marathon under 55 minutes.',
-    category: 'Health & Fitness',
-    targetDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 45 days from now
-    milestones: [
-      { id: 'm-2-1', title: 'Run 3km without walking or stopping', completed: true },
-      { id: 'm-2-2', title: 'Complete a 5km run in under 26 minutes', completed: false },
-      { id: 'm-2-3', title: 'Complete an 8km run at training pace', completed: false },
-      { id: 'm-2-4', title: 'Full 10k run on race day', completed: false }
-    ],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'g-3',
-    title: 'Learn advanced Next.js features',
-    description: 'Master Server Actions, Parallel Routes, and React Server Components (RSC) architecture.',
-    category: 'Learning',
-    targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 60 days from now
-    milestones: [
-      { id: 'm-3-1', title: 'Read React Server Component architecture spec', completed: true },
-      { id: 'm-3-2', title: 'Build a full-stack App Router mock project', completed: false },
-      { id: 'm-3-3', title: 'Deploy dynamic edge functions with serverless database logs', completed: false }
-    ],
-    createdAt: new Date().toISOString(),
-  }
-];
+const DEFAULT_GOALS = [];
 
 export function GoalProvider({ children }) {
   const [goals, setGoals] = useState([]);
