@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { generateId } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
+import { summarizeNote, generateFlashcards } from '../services/ai.service';
+
 const NoteContext = createContext(null);
 
 const STORAGE_KEY = 'productivityos_notes';
@@ -105,18 +107,19 @@ export function NoteProvider({ children }) {
     toast.success(note.isArchived ? 'Note restored' : 'Note archived');
   }, [notes, updateNote]);
 
-  // Mock AI summary features (Gemini integration will be mapped to this)
+  // Live Gemini integration mapped here
   const summarizeNoteAI = useCallback(async (id) => {
     const note = notes.find((n) => n.id === id);
     if (!note) return;
     
     toast.loading('AI is reading and summarizing your note...', { id: 'ai-summary' });
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    const summary = `### AI Summary of: ${note.title}\n\nThe note covers structural tech stack highlights including React 19, Tailwind CSS v4, and Node.js. It details database schemas and setup specifications for folders in the MVC architecture.`;
-    
-    toast.success('AI Summary Generated!', { id: 'ai-summary' });
-    return summary;
+    try {
+      const summary = await summarizeNote(note.title, note.content);
+      toast.success('AI Summary Generated!', { id: 'ai-summary' });
+      return summary;
+    } catch (error) {
+      toast.error('Failed to generate AI Summary', { id: 'ai-summary' });
+    }
   }, [notes]);
 
   const generateFlashcardsAI = useCallback(async (id) => {
@@ -124,16 +127,17 @@ export function NoteProvider({ children }) {
     if (!note) return;
 
     toast.loading('AI is generating flashcards...', { id: 'ai-flash' });
-    await new Promise((resolve) => setTimeout(resolve, 1800));
-
-    const flashcards = [
-      { q: 'What is the frontend framework version?', a: 'React 19' },
-      { q: 'What database collection adapter is used?', a: 'Mongoose' },
-      { q: 'What folder houses API controllers?', a: 'server/controllers/' },
-    ];
-
-    toast.success('Generated 3 Flashcards!', { id: 'ai-flash' });
-    return flashcards;
+    try {
+      const results = await generateFlashcards(note.title, note.content);
+      const mapped = results.map((item) => ({
+        q: item.question || item.q,
+        a: item.answer || item.a
+      }));
+      toast.success(`Generated ${mapped.length} Flashcards!`, { id: 'ai-flash' });
+      return mapped;
+    } catch (error) {
+      toast.error('Failed to generate Flashcards', { id: 'ai-flash' });
+    }
   }, [notes]);
 
   const value = {

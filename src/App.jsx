@@ -5,6 +5,7 @@ import { SidebarProvider } from './context/SidebarContext';
 import { TaskProvider } from './context/TaskContext';
 import { NoteProvider } from './context/NoteContext';
 import { HabitProvider } from './context/HabitContext';
+import { GoalProvider } from './context/GoalContext';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
@@ -15,7 +16,9 @@ export default function App() {
           <TaskProvider>
             <NoteProvider>
               <HabitProvider>
-                <AppRoutes />
+                <GoalProvider>
+                  <AppRoutes />
+                </GoalProvider>
               </HabitProvider>
             </NoteProvider>
             <Toaster
