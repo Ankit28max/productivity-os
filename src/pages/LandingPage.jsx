@@ -134,42 +134,29 @@ export default function LandingPage() {
         style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 65%)' }}
       />
 
-      {/* NAVBAR MATCHING SCREENSHOT EXACTLY */}
-      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[#0c0c0e] border-b border-white/[0.03] flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto">
-        {/* Left: SVG Mascot logo (MUSTACHE MAN) */}
-        <div className="flex items-center">
-          <svg className="h-9 w-9 text-white select-none cursor-pointer" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleLaunchApp}>
-            {/* Turban shape */}
-            <path d="M50 15C32 15 22 28 22 42C22 45 23 48 25 50C29 45 35 40 45 42C48 38 52 38 55 42C65 40 71 45 75 50C77 48 78 45 78 42C78 28 68 15 50 15Z" fill="white" />
-            {/* Diagonal stripes on turban */}
-            <path d="M30 20L45 35M40 16L60 36M52 15L70 33" stroke="#0c0c0e" strokeWidth="2.5" strokeLinecap="round" />
-            {/* Orange forehead bindi */}
-            <circle cx="50" cy="46" r="4.5" fill="#ea580c" />
-            {/* Glasses frames */}
-            <circle cx="36" cy="62" r="12" stroke="white" strokeWidth="4" />
-            <circle cx="64" cy="62" r="12" stroke="white" strokeWidth="4" />
-            <path d="M48 62H52" stroke="white" strokeWidth="4" />
-            {/* Angle brackets inside lenses */}
-            <path d="M38 59L34 62L38 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M62 59L66 62L62 65" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            {/* Mustache */}
-            <path d="M33 76C43 76 47 70 50 74C53 70 57 76 67 76C73 76 76 72 76 72C76 72 70 82 50 82C30 82 24 72 24 72C24 72 27 76 33 76Z" fill="white" />
-          </svg>
+      {/* NAVBAR MATCHING SCREENSHOT EXACTLY (STYLING & STRUCTURE) */}
+      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[#0c0c0e]/90 backdrop-blur-md border-b border-white/[0.03] flex items-center justify-between px-6 md:px-12 max-w-[1400px] mx-auto">
+        {/* Left: ProductivityOS Logo */}
+        <div className="flex items-center gap-2 select-none cursor-pointer" onClick={handleLaunchApp}>
+          <div className="h-7 w-7 rounded-lg bg-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <HiOutlineSparkles className="h-4.5 w-4.5 text-white" />
+          </div>
+          <span className="font-extrabold text-sm text-text-primary tracking-tight">ProductivityOS</span>
         </div>
 
-        {/* Center navigation links matches screenshot exactly */}
+        {/* Center navigation links */}
         <nav className="hidden md:flex items-center gap-9">
           <a href="#features" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Hackathons
+            Features
           </a>
           <a href="#consistency" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Quiz
+            Heatmap
           </a>
           <a href="#telemetry" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Stories
+            Telemetry
           </a>
           <a href="#coaching" className="text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors tracking-wide">
-            Courses
+            AI Coach
           </a>
         </nav>
 
