@@ -24,6 +24,7 @@ import { useTasks } from '../context/TaskContext';
 import { useHabits } from '../context/HabitContext';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import { getGreeting } from '../utils/helpers';
 
