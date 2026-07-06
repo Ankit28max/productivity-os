@@ -37,7 +37,17 @@ export function AuthProvider({ children }) {
       throw new Error('Email and password are required');
     }
 
-    const userData = { ...MOCK_USER, email };
+    const emailPrefix = email.split('@')[0];
+    const parsedName = emailPrefix
+      .split(/[._-]/)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
+
+    const userData = { 
+      ...MOCK_USER, 
+      name: parsedName, 
+      email 
+    };
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
     setUser(userData);
     setIsLoading(false);
