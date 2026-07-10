@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-// Force redeploy triggered after Vercel rollback undo
+// Force fresh build trigger - unfreezing git hook check
 import { motion } from 'framer-motion';
 import {
   HiOutlineClipboardList,
