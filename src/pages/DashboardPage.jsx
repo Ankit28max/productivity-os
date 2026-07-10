@@ -135,6 +135,7 @@ export default function DashboardPage() {
 
   // Calculate weighted unified Performance Score
   const taskPercentVal = totalTasks > 0 ? completedCount / totalTasks : 0;
+  const taskCompletionRate = Math.round(taskPercentVal * 100);
   const habitsPercentVal = habits && habits.length > 0 ? habitsCompleted / habits.length : 0;
   
   const stepsPercent = todayLog && todayLog.target > 0 ? Math.min((todayLog.count || 0) / todayLog.target, 1) : 0;
@@ -251,10 +252,10 @@ export default function DashboardPage() {
         />
         <StatCard
           icon={HiOutlineChartBar}
-          value={`${productivityScore}%`}
+          value={`${taskCompletionRate}%`}
           label="Completion Rate"
           sublabel="tasks done / total"
-          trend={productivityScore > 50 ? 8 : -3}
+          trend={taskCompletionRate > 50 ? 8 : -3}
           color="orange"
           index={2}
         />
