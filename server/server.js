@@ -18,6 +18,8 @@ app.use('/api/notes', require('./routes/notes'));
 app.use('/api/habits', require('./routes/habits'));
 app.use('/api/goals', require('./routes/goals'));
 app.use('/api/steps', require('./routes/steps'));
+app.use('/api/ai', require('./routes/ai'));
+
 
 // Basic welcome route
 app.get('/', (req, res) => {
