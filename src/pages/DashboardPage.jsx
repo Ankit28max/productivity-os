@@ -118,47 +118,49 @@ export default function DashboardPage() {
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((t) => t.status === 'completed');
+  const totalTasks = tasks ? tasks.length : 0;
+  const completedTasks = tasks ? tasks.filter((t) => t.status === 'completed') : [];
   const completedCount = completedTasks.length;
-  const bestStreak = habits.length > 0 ? Math.max(...habits.map((h) => getStreak(h))) : 0;
-  const totalGoals = goals.length;
-  const activeGoals = goals.filter(g => g.milestones && !g.milestones.every(m => m.completed)).length;
+  const bestStreak = habits && habits.length > 0 ? Math.max(...habits.map((h) => getStreak(h) || 0)) : 0;
+  const totalGoals = goals ? goals.length : 0;
+  const activeGoals = goals ? goals.filter(g => g.milestones && !g.milestones.every(m => m.completed)).length : 0;
 
   const todayStr = new Date().toISOString().split('T')[0];
-  const todayTasksList = tasks.filter((t) => t.dueDate === todayStr).slice(0, 4);
+  const todayTasksList = tasks ? tasks.filter((t) => t.dueDate === todayStr).slice(0, 4) : [];
   const pendingTodayCount = todayTasksList.filter(t => t.status !== 'completed').length;
 
-  const todayLog = getTodayLog();
-  const habitsCompleted = habits.filter((h) => h.history?.includes(todayStr)).length;
+  const todayLog = getTodayLog() || { count: 0, target: 10000, water: 0, waterTarget: 2000, sleep: 0, sleepTarget: 8 };
+  const habitsCompleted = habits ? habits.filter((h) => h && h.history && Array.isArray(h.history) && h.history.includes(todayStr)).length : 0;
 
   // Calculate weighted unified Performance Score
   const taskPercentVal = totalTasks > 0 ? completedCount / totalTasks : 0;
-  const habitsPercentVal = habits.length > 0 ? habitsCompleted / habits.length : 0;
+  const habitsPercentVal = habits && habits.length > 0 ? habitsCompleted / habits.length : 0;
   
-  const stepsPercent = todayLog.target > 0 ? Math.min(todayLog.count / todayLog.target, 1) : 0;
-  const waterPercent = todayLog.waterTarget > 0 ? Math.min((todayLog.water || 0) / todayLog.waterTarget, 1) : 0;
-  const sleepPercent = todayLog.sleepTarget > 0 ? Math.min((todayLog.sleep || 0) / todayLog.sleepTarget, 1) : 0;
+  const stepsPercent = todayLog && todayLog.target > 0 ? Math.min((todayLog.count || 0) / todayLog.target, 1) : 0;
+  const waterPercent = todayLog && todayLog.waterTarget > 0 ? Math.min((todayLog.water || 0) / todayLog.waterTarget, 1) : 0;
+  const sleepPercent = todayLog && todayLog.sleepTarget > 0 ? Math.min((todayLog.sleep || 0) / todayLog.sleepTarget, 1) : 0;
   const wellnessPercentVal = (stepsPercent + waterPercent + sleepPercent) / 3;
 
   // Weighted formula: 40% tasks, 30% habits, 30% wellness
-  const performanceScore = Math.round(
+  const rawScore = Math.round(
     (taskPercentVal * 40) + 
     (habitsPercentVal * 30) + 
     (wellnessPercentVal * 30)
   );
+  
+  const performanceScore = isNaN(rawScore) ? 0 : rawScore;
 
   // Aggregate user logs for the Gemini AI executive coach
   const telemetryStats = {
     tasksCompleted: completedCount,
     tasksTotal: totalTasks,
     habitsCompleted,
-    stepsLogged: todayLog.count,
-    stepsTarget: todayLog.target || 10000,
-    waterLogged: todayLog.water || 0,
-    waterTarget: todayLog.waterTarget || 2000,
-    sleepLogged: todayLog.sleep || 0,
-    sleepTarget: todayLog.sleepTarget || 8,
+    stepsLogged: todayLog?.count || 0,
+    stepsTarget: todayLog?.target || 10000,
+    waterLogged: todayLog?.water || 0,
+    waterTarget: todayLog?.waterTarget || 2000,
+    sleepLogged: todayLog?.sleep || 0,
+    sleepTarget: todayLog?.sleepTarget || 8,
   };
 
 
