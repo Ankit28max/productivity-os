@@ -121,7 +121,6 @@ export default function DashboardPage() {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.status === 'completed');
   const completedCount = completedTasks.length;
-  const productivityScore = totalTasks > 0 ? Math.round((completedCount / totalTasks) ? (completedCount / totalTasks) * 100 : 0) : 0;
   const bestStreak = habits.length > 0 ? Math.max(...habits.map((h) => getStreak(h))) : 0;
   const totalGoals = goals.length;
   const activeGoals = goals.filter(g => g.milestones && !g.milestones.every(m => m.completed)).length;
@@ -131,12 +130,29 @@ export default function DashboardPage() {
   const pendingTodayCount = todayTasksList.filter(t => t.status !== 'completed').length;
 
   const todayLog = getTodayLog();
+  const habitsCompleted = habits.filter((h) => h.history?.includes(todayStr)).length;
+
+  // Calculate weighted unified Performance Score
+  const taskPercentVal = totalTasks > 0 ? completedCount / totalTasks : 0;
+  const habitsPercentVal = habits.length > 0 ? habitsCompleted / habits.length : 0;
+  
+  const stepsPercent = todayLog.target > 0 ? Math.min(todayLog.count / todayLog.target, 1) : 0;
+  const waterPercent = todayLog.waterTarget > 0 ? Math.min((todayLog.water || 0) / todayLog.waterTarget, 1) : 0;
+  const sleepPercent = todayLog.sleepTarget > 0 ? Math.min((todayLog.sleep || 0) / todayLog.sleepTarget, 1) : 0;
+  const wellnessPercentVal = (stepsPercent + waterPercent + sleepPercent) / 3;
+
+  // Weighted formula: 40% tasks, 30% habits, 30% wellness
+  const performanceScore = Math.round(
+    (taskPercentVal * 40) + 
+    (habitsPercentVal * 30) + 
+    (wellnessPercentVal * 30)
+  );
 
   // Aggregate user logs for the Gemini AI executive coach
   const telemetryStats = {
     tasksCompleted: completedCount,
     tasksTotal: totalTasks,
-    habitsCompleted: habits.filter((h) => h.history?.includes(todayStr)).length,
+    habitsCompleted,
     stepsLogged: todayLog.count,
     stepsTarget: todayLog.target || 10000,
     waterLogged: todayLog.water || 0,
@@ -144,6 +160,7 @@ export default function DashboardPage() {
     sleepLogged: todayLog.sleep || 0,
     sleepTarget: todayLog.sleepTarget || 8,
   };
+
 
 
   return (
@@ -263,7 +280,7 @@ export default function DashboardPage() {
               <div className="p-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20">
                 <HiOutlineLightningBolt className="h-4 w-4 text-violet-400" />
               </div>
-              <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">Productivity Radar</h3>
+              <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">AI Performance Index</h3>
             </div>
 
             <div className="relative mb-5 z-10 flex items-center justify-center">
@@ -278,7 +295,7 @@ export default function DashboardPage() {
                   cx="50" cy="50" r="42" fill="none"
                   stroke="url(#radarGrad)" strokeWidth="6.5"
                   strokeLinecap="round"
-                  strokeDasharray={`${productivityScore * 2.64} ${100 * 2.64}`}
+                  strokeDasharray={`${performanceScore * 2.64} ${100 * 2.64}`}
                   className="transition-all duration-1000 ease-out"
                 />
                 <defs>
@@ -289,24 +306,24 @@ export default function DashboardPage() {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-extrabold tracking-tight text-text-primary">{productivityScore}%</span>
-                <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Score</span>
+                <span className="text-3xl font-extrabold tracking-tight text-text-primary">{performanceScore}%</span>
+                <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Focus Index</span>
               </div>
             </div>
 
             <div className="text-center z-10 w-full space-y-2">
-              <p className="text-[11px] font-bold text-text-secondary">
-                {completedCount} of {totalTasks} Tasks Completed
+              <p className="text-[10px] font-bold text-text-secondary leading-normal">
+                Tasks ({Math.round(taskPercentVal * 100)}%) • Habits ({Math.round(habitsPercentVal * 100)}%) • Wellness ({Math.round(wellnessPercentVal * 100)}%)
               </p>
               <div className="w-full bg-surface-800/50 rounded-full h-1.5 overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full transition-all duration-1000"
-                  style={{ width: `${productivityScore}%` }}
+                  style={{ width: `${performanceScore}%` }}
                 />
               </div>
               <div className="flex items-center justify-center gap-1.5 text-[9px] text-lime-400 font-bold uppercase tracking-wider">
                 <HiOutlineTrendingUp className="h-3 w-3" />
-                <span>+4% vs last week</span>
+                <span>Diagnostics synced</span>
               </div>
               <Button
                 size="xs"
