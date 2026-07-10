@@ -34,6 +34,7 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import { getGreeting } from '../utils/helpers';
+import StepsWidget from '../components/dashboard/StepsWidget';
 
 const taskChartData = [
   { day: 'Mon', completed: 5, total: 7 },
@@ -287,6 +288,9 @@ export default function DashboardPage() {
               </div>
             </div>
           </Card>
+
+          {/* Steps / Wellness Widget */}
+          <StepsWidget />
 
           {/* Habits Checklist */}
           <Card className="p-5 border border-white/[0.04]">

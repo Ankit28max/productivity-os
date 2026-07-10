@@ -28,7 +28,7 @@ function normalizeResponse(data) {
   if (!data || typeof data !== 'object') return data;
 
   // Normalize top-level arrays
-  const arrayKeys = ['tasks', 'habits', 'goals', 'notes'];
+  const arrayKeys = ['tasks', 'habits', 'goals', 'notes', 'logs'];
   for (const key of arrayKeys) {
     if (Array.isArray(data[key])) {
       data[key] = data[key].map(normalizeDoc);
@@ -36,7 +36,7 @@ function normalizeResponse(data) {
   }
 
   // Normalize top-level single documents
-  const singleKeys = ['task', 'habit', 'goal', 'note', 'user'];
+  const singleKeys = ['task', 'habit', 'goal', 'note', 'user', 'log'];
   for (const key of singleKeys) {
     if (data[key] && typeof data[key] === 'object') {
       data[key] = normalizeDoc(data[key]);

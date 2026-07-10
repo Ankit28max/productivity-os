@@ -7,6 +7,7 @@ import { NoteProvider } from './context/NoteContext';
 import { HabitProvider } from './context/HabitContext';
 import { GoalProvider } from './context/GoalContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { StepProvider } from './context/StepContext';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
@@ -19,7 +20,9 @@ export default function App() {
               <NoteProvider>
                 <HabitProvider>
                   <GoalProvider>
-                    <AppRoutes />
+                    <StepProvider>
+                      <AppRoutes />
+                    </StepProvider>
                   </GoalProvider>
                 </HabitProvider>
               </NoteProvider>
