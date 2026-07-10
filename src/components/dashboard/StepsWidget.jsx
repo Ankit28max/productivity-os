@@ -294,6 +294,7 @@ export default function StepsWidget() {
                     step={activeTab === 'sleep' ? '0.1' : '1'}
                     value={inputVal}
                     onChange={(e) => setInputVal(Math.max(0, parseFloat(e.target.value) || 0))}
+                    onFocus={(e) => e.target.select()}
                     className="w-full bg-surface-900 border border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-text-primary focus:outline-none focus:border-orange-500/50 transition-all font-semibold"
                     required
                   />
@@ -306,6 +307,7 @@ export default function StepsWidget() {
                     type="number"
                     value={inputTarget}
                     onChange={(e) => setInputTarget(Math.max(1, parseInt(e.target.value) || 0))}
+                    onFocus={(e) => e.target.select()}
                     className="w-full bg-surface-900 border border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-text-primary focus:outline-none focus:border-orange-500/50 transition-all font-semibold"
                     required
                   />
