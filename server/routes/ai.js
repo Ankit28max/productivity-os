@@ -36,29 +36,34 @@ async function callGeminiWithFallback(payload, systemInstruction = null) {
 
   // List of models and endpoints to try in sequence
   const attempts = [
-    // 1. Stable v1 endpoint (base flash model)
+    // 1. Stable v1 endpoint (Gemini 2.0 Flash)
+    {
+      url: 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent',
+      payload: { ...payload }
+    },
+    // 2. Stable v1 endpoint (Gemini 2.5 Flash)
+    {
+      url: 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent',
+      payload: { ...payload }
+    },
+    // 3. Stable v1 endpoint (Gemini 3.5 Flash)
+    {
+      url: 'https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent',
+      payload: { ...payload }
+    },
+    // 4. Stable v1 endpoint (Gemini 1.5 Flash)
     {
       url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
       payload: { ...payload }
     },
-    // 2. v1beta version with model alias suffix
-    {
-      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
-      payload: { ...payload }
-    },
-    // 3. Classic gemini-pro (v1beta)
-    {
-      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
-      payload: { ...payload }
-    },
-    // 4. Stable v1 classic gemini-pro
+    // 5. Stable v1 classic gemini-pro
     {
       url: 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent',
       payload: { ...payload }
     },
-    // 5. Newer v1beta flash model
+    // 6. v1beta version with model alias suffix
     {
-      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
       payload: { ...payload }
     }
   ];
