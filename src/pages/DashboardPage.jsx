@@ -35,6 +35,9 @@ import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import { getGreeting } from '../utils/helpers';
 import StepsWidget from '../components/dashboard/StepsWidget';
+import { useSteps } from '../context/StepContext';
+import ProductivityAIModal from '../components/dashboard/ProductivityAIModal';
+
 
 const taskChartData = [
   { day: 'Mon', completed: 5, total: 7 },
@@ -111,11 +114,14 @@ export default function DashboardPage() {
   const { tasks } = useTasks();
   const { habits, getStreak, toggleHabitCheckIn } = useHabits();
   const { goals } = useGoals();
+  const { getTodayLog } = useSteps();
+
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.status === 'completed');
   const completedCount = completedTasks.length;
-  const productivityScore = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+  const productivityScore = totalTasks > 0 ? Math.round((completedCount / totalTasks) ? (completedCount / totalTasks) * 100 : 0) : 0;
   const bestStreak = habits.length > 0 ? Math.max(...habits.map((h) => getStreak(h))) : 0;
   const totalGoals = goals.length;
   const activeGoals = goals.filter(g => g.milestones && !g.milestones.every(m => m.completed)).length;
@@ -123,6 +129,22 @@ export default function DashboardPage() {
   const todayStr = new Date().toISOString().split('T')[0];
   const todayTasksList = tasks.filter((t) => t.dueDate === todayStr).slice(0, 4);
   const pendingTodayCount = todayTasksList.filter(t => t.status !== 'completed').length;
+
+  const todayLog = getTodayLog();
+
+  // Aggregate user logs for the Gemini AI executive coach
+  const telemetryStats = {
+    tasksCompleted: completedCount,
+    tasksTotal: totalTasks,
+    habitsCompleted: habits.filter((h) => h.history?.includes(todayStr)).length,
+    stepsLogged: todayLog.count,
+    stepsTarget: todayLog.target || 10000,
+    waterLogged: todayLog.water || 0,
+    waterTarget: todayLog.waterTarget || 2000,
+    sleepLogged: todayLog.sleep || 0,
+    sleepTarget: todayLog.sleepTarget || 8,
+  };
+
 
   return (
     <motion.div
@@ -286,6 +308,15 @@ export default function DashboardPage() {
                 <HiOutlineTrendingUp className="h-3 w-3" />
                 <span>+4% vs last week</span>
               </div>
+              <Button
+                size="xs"
+                variant="gradient"
+                icon={HiOutlineSparkles}
+                onClick={() => setIsAIModalOpen(true)}
+                className="mt-3.5 w-full text-[10px] py-2 cursor-pointer font-bold"
+              >
+                AI Performance Audit
+              </Button>
             </div>
           </Card>
 
@@ -513,6 +544,12 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      <ProductivityAIModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        stats={telemetryStats}
+      />
     </motion.div>
   );
 }
