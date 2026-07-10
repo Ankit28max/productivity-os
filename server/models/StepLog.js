@@ -21,6 +21,26 @@ const StepLogSchema = new mongoose.Schema(
       default: 10000,
       min: [1, 'Target steps must be at least 1'],
     },
+    water: {
+      type: Number,
+      default: 0,
+      min: [0, 'Water count cannot be negative'],
+    },
+    waterTarget: {
+      type: Number,
+      default: 2000, // in ml
+      min: [1, 'Target water must be at least 1'],
+    },
+    sleep: {
+      type: Number,
+      default: 0,
+      min: [0, 'Sleep hours cannot be negative'],
+    },
+    sleepTarget: {
+      type: Number,
+      default: 8, // in hours
+      min: [1, 'Target sleep must be at least 1'],
+    },
   },
   {
     timestamps: true,

@@ -44,7 +44,6 @@ export function StepProvider({ children }) {
 
       if (res.success && res.log) {
         setLogs((prev) => {
-          // If today's log already exists in state, replace it. Otherwise, prepend it.
           const index = prev.findIndex((l) => l.date === todayStr);
           if (index > -1) {
             const updated = [...prev];
@@ -62,10 +61,73 @@ export function StepProvider({ children }) {
     }
   }, []);
 
+  const logWater = useCallback(async (water, waterTarget = 2000) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    try {
+      const res = await api.post('/steps', {
+        date: todayStr,
+        water,
+        waterTarget,
+      });
+
+      if (res.success && res.log) {
+        setLogs((prev) => {
+          const index = prev.findIndex((l) => l.date === todayStr);
+          if (index > -1) {
+            const updated = [...prev];
+            updated[index] = res.log;
+            return updated;
+          }
+          return [res.log, ...prev];
+        });
+        toast.success(`Water log updated: ${water} ml 💧`);
+        return res.log;
+      }
+    } catch (err) {
+      toast.error(err.message || 'Error saving water telemetry');
+      throw err;
+    }
+  }, []);
+
+  const logSleep = useCallback(async (sleep, sleepTarget = 8) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    try {
+      const res = await api.post('/steps', {
+        date: todayStr,
+        sleep,
+        sleepTarget,
+      });
+
+      if (res.success && res.log) {
+        setLogs((prev) => {
+          const index = prev.findIndex((l) => l.date === todayStr);
+          if (index > -1) {
+            const updated = [...prev];
+            updated[index] = res.log;
+            return updated;
+          }
+          return [res.log, ...prev];
+        });
+        toast.success(`Sleep logged: ${sleep} hrs 😴`);
+        return res.log;
+      }
+    } catch (err) {
+      toast.error(err.message || 'Error saving sleep telemetry');
+      throw err;
+    }
+  }, []);
+
   // Helper selectors
   const getTodayLog = useCallback(() => {
     const todayStr = new Date().toISOString().split('T')[0];
-    return logs.find((l) => l.date === todayStr) || { count: 0, target: 10000 };
+    return logs.find((l) => l.date === todayStr) || { 
+      count: 0, 
+      target: 10000,
+      water: 0,
+      waterTarget: 2000,
+      sleep: 0,
+      sleepTarget: 8
+    };
   }, [logs]);
 
   // Derived wellness stats
@@ -76,10 +138,13 @@ export function StepProvider({ children }) {
     return { kcal, distance, time };
   }, []);
 
+
   const value = {
     logs,
     isLoading,
     logSteps,
+    logWater,
+    logSleep,
     getTodayLog,
     getWellnessMetrics,
     fetchLogs,

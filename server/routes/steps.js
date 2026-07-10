@@ -20,14 +20,11 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route    POST api/steps
-// @desc     Log or update steps count for a specific date
-// @access   Private
 router.post('/', auth, async (req, res) => {
-  const { date, count, target } = req.body;
+  const { date, count, target, water, waterTarget, sleep, sleepTarget } = req.body;
 
-  if (!date || count === undefined) {
-    return res.status(400).json({ success: false, message: 'Date and steps count are required' });
+  if (!date) {
+    return res.status(400).json({ success: false, message: 'Date is required' });
   }
 
   try {
@@ -35,18 +32,27 @@ router.post('/', auth, async (req, res) => {
     let log = await StepLog.findOne({ userId: req.user.id, date });
 
     if (log) {
-      log.count = count;
-      if (target) log.target = target;
+      if (count !== undefined) log.count = count;
+      if (target !== undefined) log.target = target;
+      if (water !== undefined) log.water = water;
+      if (waterTarget !== undefined) log.waterTarget = waterTarget;
+      if (sleep !== undefined) log.sleep = sleep;
+      if (sleepTarget !== undefined) log.sleepTarget = sleepTarget;
       await log.save();
     } else {
       log = new StepLog({
         userId: req.user.id,
         date,
-        count,
+        count: count !== undefined ? count : 0,
         target: target || 10000,
+        water: water !== undefined ? water : 0,
+        waterTarget: waterTarget || 2000,
+        sleep: sleep !== undefined ? sleep : 0,
+        sleepTarget: sleepTarget || 8,
       });
       await log.save();
     }
+
 
     res.json({
       success: true,

@@ -17,10 +17,12 @@ import {
 } from 'react-icons/hi';
 import { useSidebar } from '../../context/SidebarContext';
 import { useAuth } from '../../context/AuthContext';
+import { useSteps } from '../../context/StepContext';
 import { ROUTES } from '../../utils/constants';
 import { cn } from '../../utils/cn';
 import Avatar from '../ui/Avatar';
 import Logo from '../ui/Logo';
+
 
 const iconMap = {
   HiOutlineHome,
@@ -59,7 +61,11 @@ const navSections = [
 export default function Sidebar() {
   const { isOpen, isMobile, isMobileOpen, toggle, closeMobile } = useSidebar();
   const { user, logout } = useAuth();
+  const { getTodayLog } = useSteps();
   const location = useLocation();
+
+  const todayLog = getTodayLog();
+
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
@@ -225,9 +231,68 @@ export default function Sidebar() {
           </AnimatePresence>
         </button>
 
+        {/* Mini Wellness Progress Widget */}
+        <AnimatePresence>
+          {(isOpen || isMobileOpen) && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-3 mb-1 px-3 py-2.5 rounded-xl border border-white/[0.03] bg-surface-900/10 space-y-2 select-none"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-extrabold text-text-muted uppercase tracking-widest">Wellness Telemetry</span>
+                <span className="text-[9px] font-bold text-orange-400">Live</span>
+              </div>
+              <div className="space-y-1.5 pt-0.5">
+                {/* Steps bar */}
+                <div className="space-y-0.5">
+                  <div className="flex justify-between text-[9px] font-bold text-text-secondary">
+                    <span>🚶 Steps</span>
+                    <span>{todayLog.count.toLocaleString()} / {todayLog.target.toLocaleString()}</span>
+                  </div>
+                  <div className="w-full h-1 bg-surface-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-orange-500"
+                      style={{ width: `${Math.min((todayLog.count / todayLog.target) * 100, 100)}%` }}
+                    />
+                  </div>
+                </div>
+                {/* Water bar */}
+                <div className="space-y-0.5">
+                  <div className="flex justify-between text-[9px] font-bold text-text-secondary">
+                    <span>💧 Water</span>
+                    <span>{todayLog.water || 0} / {todayLog.waterTarget || 2000} ml</span>
+                  </div>
+                  <div className="w-full h-1 bg-surface-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-cyan-500"
+                      style={{ width: `${Math.min(((todayLog.water || 0) / (todayLog.waterTarget || 2000)) * 100, 100)}%` }}
+                    />
+                  </div>
+                </div>
+                {/* Sleep bar */}
+                <div className="space-y-0.5">
+                  <div className="flex justify-between text-[9px] font-bold text-text-secondary">
+                    <span>😴 Sleep</span>
+                    <span>{todayLog.sleep || 0} / {todayLog.sleepTarget || 8} hrs</span>
+                  </div>
+                  <div className="w-full h-1 bg-surface-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-purple-500"
+                      style={{ width: `${Math.min(((todayLog.sleep || 0) / (todayLog.sleepTarget || 8)) * 100, 100)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Enhanced User card with XP bar */}
         <AnimatePresence>
           {(isOpen || isMobileOpen) && (
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
