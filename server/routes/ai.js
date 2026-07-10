@@ -219,12 +219,13 @@ Do not add any explanation, wrappers, or markdown formatting outside the JSON co
     const analysis = cleanJsonMarkdown(text);
     res.json({ success: true, analysis });
   } catch (error) {
-    console.error('Server Gemini API Productivity Analysis Error:', error.message);
+    const errorDetail = error.response?.data?.error?.message || error.message;
+    console.error('Server Gemini API Productivity Analysis Error:', errorDetail);
     res.json({
       success: true,
       analysis: {
         score: 75,
-        analysis: 'Calculated baseline score of 75% due to API network limitations. Your local telemetry stats show stable daily activity, though habit checks could be optimized.',
+        analysis: `Calculated baseline score of 75% due to API network limitations. Diagnostic Error Details: "${errorDetail}". Please ensure GEMINI_API_KEY is correctly set in your Vercel Project Settings.`,
         recommendations: [
           'Organize your task categories to filter priority projects.',
           'Log sleep logs daily to evaluate cognitive recovery.',
