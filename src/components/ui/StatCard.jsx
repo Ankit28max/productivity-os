@@ -1,18 +1,10 @@
 import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
 import { HiOutlineTrendingUp, HiOutlineTrendingDown } from 'react-icons/hi';
+import AnimatedCounter from '../animations/AnimatedCounter';
 
 /**
  * StatCard — a premium animated stat tile with icon, value, label, and optional trend delta.
- *
- * Props:
- *  - icon: React component (e.g. HiOutlineFire)
- *  - value: string | number  — the main figure to display
- *  - label: string           — short description
- *  - sublabel: string        — secondary context line (optional)
- *  - trend: number           — positive = up, negative = down, undefined = hidden
- *  - color: 'orange' | 'cyan' | 'violet' | 'lime' | 'amber'
- *  - className: string
  */
 const colorMap = {
   orange: {
@@ -66,6 +58,32 @@ export default function StatCard({
   const hasTrend = trend !== undefined && trend !== null;
   const trendUp = trend >= 0;
 
+  // Helper to render the value with counting animation if it contains numbers
+  const renderValue = () => {
+    if (typeof value === 'number') {
+      return <AnimatedCounter value={value} />;
+    }
+
+    if (typeof value === 'string') {
+      // Regex to extract prefix, number, and suffix
+      const match = value.match(/^([^\d-]*)([-+]?\d+(?:\.\d+)?)([^\d]*)$/);
+      if (match) {
+        const prefix = match[1];
+        const numVal = parseFloat(match[2]);
+        const suffix = match[3];
+        return (
+          <AnimatedCounter
+            value={numVal}
+            prefix={prefix}
+            suffix={suffix}
+          />
+        );
+      }
+    }
+
+    return value;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -105,7 +123,7 @@ export default function StatCard({
       {/* Value */}
       <div className="relative z-10">
         <p className={cn('text-2xl font-extrabold tracking-tight leading-none', c.value)}>
-          {value}
+          {renderValue()}
         </p>
         <p className="text-xs font-semibold text-text-primary mt-1">{label}</p>
         {sublabel && (
@@ -115,3 +133,4 @@ export default function StatCard({
     </motion.div>
   );
 }
+
