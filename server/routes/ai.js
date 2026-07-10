@@ -3,14 +3,12 @@ const router = express.Router();
 const axios = require('axios');
 const auth = require('../middleware/auth');
 
-const BASE_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
-
 const getApiKey = () => {
   return process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
 };
 
 /**
- * Clean and parse JSON from markdown code block code wrappers if Gemini returned markdown.
+ * Clean and parse JSON from markdown code block wrappers if Gemini returned markdown.
  */
 function cleanJsonMarkdown(text) {
   try {
@@ -27,6 +25,74 @@ function cleanJsonMarkdown(text) {
   } catch (err) {
     throw new Error('Failed to parse response as JSON');
   }
+}
+
+/**
+ * Robust API calling utility that retries different model names and API versions
+ */
+async function callGeminiWithFallback(payload, systemInstruction = null) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('GEMINI_API_KEY is not configured on the server');
+
+  // List of models and endpoints to try in sequence
+  const attempts = [
+    // 1. Stable v1 endpoint (base flash model)
+    {
+      url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
+      payload: { ...payload }
+    },
+    // 2. v1beta version with model alias suffix
+    {
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
+      payload: { ...payload }
+    },
+    // 3. Classic gemini-pro (v1beta)
+    {
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
+      payload: { ...payload }
+    },
+    // 4. Stable v1 classic gemini-pro
+    {
+      url: 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent',
+      payload: { ...payload }
+    },
+    // 5. Newer v1beta flash model
+    {
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+      payload: { ...payload }
+    }
+  ];
+
+  // Inject system instructions if supported & provided
+  attempts.forEach((att) => {
+    if (systemInstruction) {
+      att.payload.systemInstruction = {
+        parts: [{ text: systemInstruction }]
+      };
+    }
+  });
+
+  let lastError = null;
+
+  for (let i = 0; i < attempts.length; i++) {
+    const attempt = attempts[i];
+    try {
+      const response = await axios.post(`${attempt.url}?key=${apiKey}`, attempt.payload);
+      if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        return response.data.candidates[0].content.parts[0].text;
+      }
+    } catch (err) {
+      const errMsg = err.response?.data?.error?.message || err.message;
+      console.warn(`Gemini attempt #${i + 1} (${attempt.url}) failed:`, errMsg);
+      lastError = err;
+      // If it's a key permission/quota issue (not 404), fail fast. Otherwise continue.
+      if (err.response?.status === 400 && errMsg.includes('API key')) {
+        throw err;
+      }
+    }
+  }
+
+  throw lastError || new Error('All model attempts failed');
 }
 
 // @route    POST api/ai/chat
@@ -50,28 +116,24 @@ router.post('/chat', auth, async (req, res) => {
     }));
 
     const systemInstruction = `You are ProductivityOS AI, a professional full-stack productivity coach and study planner.
-Your goal is to help the user manage their tasks, notes, habits, and goals.
+Your goal is to help the user manage their tasks, habits, goals, notes, and wellness stats.
 Provide actionable, clear, and encouraging advice. Keep responses concise.
 
 Current User Context:
 ${userContext}`;
 
-    const response = await axios.post(`${BASE_URL}?key=${apiKey}`, {
-      contents: formattedContents,
-      systemInstruction: {
-        parts: [{ text: systemInstruction }]
-      }
-    });
+    const text = await callGeminiWithFallback({ contents: formattedContents }, systemInstruction);
 
     res.json({
       success: true,
-      text: response.data.candidates[0].content.parts[0].text,
+      text,
     });
   } catch (error) {
-    console.error('Server Gemini API Chat Error:', error.message);
+    const errorDetail = error.response?.data?.error?.message || error.message;
+    console.error('Server Gemini API Chat Error:', errorDetail);
     res.status(500).json({
       success: false,
-      message: error.response?.data?.error?.message || 'Failed to connect to Gemini API',
+      message: `Failed to connect to Gemini API. Error details: "${errorDetail}".`,
     });
   }
 });
@@ -104,11 +166,10 @@ Return ONLY a valid JSON array of strings, for example:
 ["Milestone 1", "Milestone 2", "Milestone 3", "Milestone 4"]
 Do not add other text, markdown explanations, or wrappers.`;
 
-    const response = await axios.post(`${BASE_URL}?key=${apiKey}`, {
+    const text = await callGeminiWithFallback({
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 
-    const text = response.data.candidates[0].content.parts[0].text;
     const milestones = cleanJsonMarkdown(text);
     res.json({ success: true, milestones });
   } catch (error) {
@@ -148,17 +209,17 @@ ${content}
 
 Provide a brief, 3-sentence summary highlighting the core takeaways of this note. Use markdown formatting.`;
 
-    const response = await axios.post(`${BASE_URL}?key=${apiKey}`, {
+    const text = await callGeminiWithFallback({
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 
     res.json({
       success: true,
-      summary: response.data.candidates[0].content.parts[0].text,
+      summary: text,
     });
   } catch (error) {
     console.error('Server Gemini API Summary Error:', error.message);
-    res.status(550).json({ success: false, message: 'Failed to generate summary' });
+    res.status(500).json({ success: false, message: 'Failed to generate summary' });
   }
 });
 
@@ -180,11 +241,11 @@ router.post('/productivity', auth, async (req, res) => {
       success: true,
       analysis: {
         score,
-        analysis: `Your score is ${score}% reflecting your baseline execution. You have completed ${stats.tasksCompleted} out of ${stats.tasksTotal} tasks and performed ${stats.stepsLogged.toLocaleString()} steps today. While your task completion rate is at ${taskPercent}%, incorporating more structure around wellness targets will directly improve cognitive focus.`,
+        analysis: `Your score is ${score}% reflecting your baseline execution. You have completed ${stats.tasksCompleted} out of ${stats.tasksTotal} tasks and performed ${stats.stepsLogged.toLocaleString()} steps today. While your task completion rate is at ${taskPercent}%, incorporating more structure around wellness targets will directly improve focus.`,
         recommendations: [
           `Create at least 2 high-priority tasks tonight to jumpstart tomorrow morning's coding flow.`,
           `Perform a check-in for remaining habits to build daily streak continuity.`,
-          `Incorporate 250ml water logs every 2 hours while coding to maintain optimal hydration.`
+          `Incorporate 250ml water logs every 2 hours while coding to maintain hydration.`
         ]
       }
     });
@@ -211,11 +272,10 @@ Return ONLY a valid JSON object matching the schema below:
 }
 Do not add any explanation, wrappers, or markdown formatting outside the JSON code block.`;
 
-    const response = await axios.post(`${BASE_URL}?key=${apiKey}`, {
+    const text = await callGeminiWithFallback({
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 
-    const text = response.data.candidates[0].content.parts[0].text;
     const analysis = cleanJsonMarkdown(text);
     res.json({ success: true, analysis });
   } catch (error) {
