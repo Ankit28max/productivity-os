@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlinePlus, HiOutlineFire } from 'react-icons/hi';
 import { useHabits } from '../context/HabitContext';
+import { staggerContainer } from '../components/animations/AnimatedPage';
 import HabitCard from '../components/habits/HabitCard';
 import HabitModal from '../components/habits/HabitModal';
 import Button from '../components/ui/Button';
@@ -117,11 +118,11 @@ export default function HabitsPage() {
               />
             </Card>
           ) : (
-            <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4" variants={staggerContainer} initial="hidden" animate="show">
               <AnimatePresence mode="popLayout">
                 {habitsWithStreaks.map((habit) => (
                   <HabitCard
-                    key={habit.id}
+                    key={habit._id || habit.id}
                     habit={habit}
                     streak={habit.streak}
                     onToggle={toggleHabitCheckIn}

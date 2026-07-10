@@ -2,11 +2,13 @@ import { motion } from 'framer-motion';
 import { HiOutlineCalendar, HiOutlineTrash, HiOutlinePencilAlt, HiOutlineTag } from 'react-icons/hi';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
+import ConfettiBurst, { useConfetti } from '../animations/ConfettiBurst';
 import { PRIORITY_COLORS, TASK_STATUS } from '../../utils/constants';
 import { formatRelativeDate } from '../../utils/helpers';
 
 export default function TaskCard({ task, onEdit, onDelete, onToggle }) {
   const isCompleted = task.status === TASK_STATUS.COMPLETED;
+  const { fire, isActive } = useConfetti();
 
   const priorityMeta = PRIORITY_COLORS[task.priority] || {
     bg: 'bg-dark-700/50',
@@ -15,13 +17,21 @@ export default function TaskCard({ task, onEdit, onDelete, onToggle }) {
     dot: 'bg-text-tertiary',
   };
 
+  const handleToggle = () => {
+    if (!isCompleted) {
+      fire(); // 🎉 confetti on completion
+    }
+    onToggle(task.id);
+  };
+
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.2 }}
+      exit={{ opacity: 0, scale: 0.95, y: -8 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -2, transition: { duration: 0.2 } }}
     >
       <Card
         className={`group transition-all duration-300 ${
@@ -30,21 +40,42 @@ export default function TaskCard({ task, onEdit, onDelete, onToggle }) {
         glow={task.priority === 'high' && !isCompleted ? 'cyan' : undefined}
       >
         <div className="flex items-start gap-3">
-          {/* Complete Checkbox */}
-          <button
-            onClick={() => onToggle(task.id)}
-            className={`h-5 w-5 rounded-lg border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all ${
-              isCompleted
-                ? 'bg-accent-500 border-accent-500 shadow-[0_0_8px_rgba(163,230,53,0.25)]'
-                : 'border-text-muted/40 hover:border-primary-500'
-            }`}
-          >
-            {isCompleted && (
-              <svg className="h-3.5 w-3.5 text-dark-950 font-bold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            )}
-          </button>
+          {/* Animated Checkbox */}
+          <div className="relative">
+            <motion.button
+              onClick={handleToggle}
+              whileTap={{ scale: 0.8 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+              className={`h-5 w-5 rounded-lg border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all cursor-pointer ${
+                isCompleted
+                  ? 'bg-accent-500 border-accent-500 shadow-[0_0_12px_rgba(163,230,53,0.3)]'
+                  : 'border-text-muted/40 hover:border-primary-500 hover:shadow-[0_0_8px_rgba(234,88,12,0.15)]'
+              }`}
+            >
+              {isCompleted && (
+                <motion.svg
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="h-3.5 w-3.5 text-dark-950 font-bold"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <motion.path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                  />
+                </motion.svg>
+              )}
+            </motion.button>
+            <ConfettiBurst active={isActive} />
+          </div>
 
           {/* Details */}
           <div className="flex-1 min-w-0">
@@ -93,20 +124,22 @@ export default function TaskCard({ task, onEdit, onDelete, onToggle }) {
 
           {/* Action buttons (Visible on hover) */}
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-2 shrink-0">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.85 }}
               onClick={() => onEdit(task)}
               className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors"
               title="Edit Task"
             >
               <HiOutlinePencilAlt className="h-4 w-4" />
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.85 }}
               onClick={() => onDelete(task.id)}
               className="p-1.5 rounded-lg hover:bg-danger-500/10 text-text-muted hover:text-danger-400 transition-colors"
               title="Delete Task"
             >
               <HiOutlineTrash className="h-4 w-4" />
-            </button>
+            </motion.button>
           </div>
         </div>
       </Card>

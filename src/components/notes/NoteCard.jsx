@@ -16,10 +16,11 @@ export default function NoteCard({ note, onEdit, onDelete, onPin, onArchive }) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95, y: -6 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -3, transition: { duration: 0.2 } }}
     >
       <Card
         className={`group flex flex-col h-56 justify-between transition-all duration-300 relative ${

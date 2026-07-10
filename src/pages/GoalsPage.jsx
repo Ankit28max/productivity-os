@@ -9,6 +9,7 @@ import {
   HiOutlineCheckCircle
 } from 'react-icons/hi';
 import { useGoals } from '../context/GoalContext';
+import { staggerContainer } from '../components/animations/AnimatedPage';
 import GoalModal from '../components/goals/GoalModal';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
@@ -238,12 +239,13 @@ export default function GoalsPage() {
 
               return (
                 <motion.div
-                  key={goal.id}
+                  key={goal._id || goal.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ opacity: 0, y: 14, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 >
                   <Card
                     variant="default"

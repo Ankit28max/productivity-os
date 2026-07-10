@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlinePlus, HiOutlineClipboardList } from 'react-icons/hi';
 import { HiOutlineSparkles } from 'react-icons/hi';
 import { useTasks } from '../context/TaskContext';
+import { staggerContainer } from '../components/animations/AnimatedPage';
 import TaskCard from '../components/tasks/TaskCard';
 import TaskFilters from '../components/tasks/TaskFilters';
 import TaskModal from '../components/tasks/TaskModal';
@@ -182,11 +183,14 @@ export default function TasksPage() {
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
         >
           <AnimatePresence mode="popLayout">
             {filteredAndSortedTasks.map((task) => (
               <TaskCard
-                key={task.id}
+                key={task._id || task.id}
                 task={task}
                 onEdit={handleOpenEditModal}
                 onDelete={deleteTask}

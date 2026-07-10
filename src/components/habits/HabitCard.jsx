@@ -44,10 +44,11 @@ export default function HabitCard({ habit, onToggle, onDelete, streak }) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95, y: -8 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -2, transition: { duration: 0.2 } }}
     >
       <Card
         className={`group transition-all duration-300 relative ${activeColor.border}`}
@@ -69,13 +70,14 @@ export default function HabitCard({ habit, onToggle, onDelete, streak }) {
             </div>
           </div>
 
-          <button
+          <motion.button
+            whileTap={{ scale: 0.85 }}
             onClick={() => onDelete(habit.id)}
             className="p-1.5 rounded-lg hover:bg-danger-500/10 text-text-muted hover:text-danger-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0"
             title="Delete Habit"
           >
             <HiOutlineTrash className="h-4 w-4" />
-          </button>
+          </motion.button>
         </div>
 
         {/* Weekly check-in grid */}

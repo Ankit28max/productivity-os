@@ -253,13 +253,13 @@ export default function CalendarPage() {
                   <div className="space-y-2">
                     {selectedDayItems.tasks.map((task) => (
                       <div
-                        key={task.id}
+                        key={task._id || task.id}
                         className="flex items-center gap-3 p-3 rounded-xl bg-surface-800/30 border border-white/[0.02] group"
                       >
                         <input
                           type="checkbox"
                           checked={task.status === 'completed'}
-                          onChange={() => toggleTaskStatus(task.id)}
+                          onChange={() => toggleTaskStatus(task._id || task.id)}
                           className="rounded border-white/10 text-primary-500 focus:ring-0 cursor-pointer focus:ring-offset-0 bg-surface-900"
                         />
                         <div className="flex-1 min-w-0">
@@ -311,7 +311,7 @@ export default function CalendarPage() {
 
                       return (
                         <div
-                          key={goal.id}
+                          key={goal._id || goal.id}
                           className="p-3 rounded-xl bg-surface-800/30 border border-white/[0.02]"
                         >
                           <div className="flex items-start justify-between gap-2">

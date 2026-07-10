@@ -472,3 +472,147 @@ body {
   background: rgba(234, 88, 12, 0.3);
   color: #f0f0ff;
 }
+
+/* ============================================
+   Advanced Animation Keyframes
+   ============================================ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ripple {
+  0% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.3); }
+  100% { box-shadow: 0 0 0 20px rgba(234, 88, 12, 0); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(234, 88, 12, 0.1); }
+  50% { border-color: rgba(234, 88, 12, 0.35); }
+}
+
+@keyframes typewriterCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes gradientText {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.04); }
+}
+
+/* ============================================
+   Animation Utility Classes
+   ============================================ */
+
+@utility animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@utility animate-gradient-flow {
+  background-size: 200% 200%;
+  animation: gradientFlow 4s ease infinite;
+}
+
+@utility animate-bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@utility animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+@utility animate-slide-down {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+@utility animate-ripple {
+  animation: ripple 0.6s ease-out;
+}
+
+@utility animate-border-glow {
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+@utility animate-typewriter-cursor {
+  animation: typewriterCursor 1s step-end infinite;
+}
+
+@utility animate-wobble {
+  animation: wobble 0.5s ease-in-out;
+}
+
+@utility animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* Animated gradient text */
+@utility gradient-text-animated {
+  background: linear-gradient(
+    135deg,
+    #f97316 0%,
+    #f59e0b 25%,
+    #ef4444 50%,
+    #a855f7 75%,
+    #f97316 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 3s linear infinite;
+}
+
+/* Hover card tilt effect */
+.card-tilt {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-tilt:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.01);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth entrance classes for staggered children */
+@utility stagger-1 { animation-delay: 0.05s; }
+@utility stagger-2 { animation-delay: 0.10s; }
+@utility stagger-3 { animation-delay: 0.15s; }
+@utility stagger-4 { animation-delay: 0.20s; }
+@utility stagger-5 { animation-delay: 0.25s; }
+@utility stagger-6 { animation-delay: 0.30s; }
+

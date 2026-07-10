@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlinePlus, HiOutlineDocumentText } from 'react-icons/hi';
 import { useNotes } from '../context/NoteContext';
+import { staggerContainer } from '../components/animations/AnimatedPage';
 import NoteCard from '../components/notes/NoteCard';
 import NoteFilters from '../components/notes/NoteFilters';
 import NoteModal from '../components/notes/NoteModal';
@@ -152,11 +153,11 @@ export default function NotesPage() {
               <span className="text-[10px] font-bold text-primary-400 uppercase tracking-widest block pl-1.5">
                 📌 Pinned Notes
               </span>
-              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" variants={staggerContainer} initial="hidden" animate="show">
                 <AnimatePresence mode="popLayout">
                   {pinnedNotes.map((note) => (
                     <NoteCard
-                      key={note.id}
+                      key={note._id || note.id}
                       note={note}
                       onEdit={handleOpenEditModal}
                       onDelete={deleteNote}
@@ -177,11 +178,11 @@ export default function NotesPage() {
                   🗒 Notes
                 </span>
               )}
-              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" variants={staggerContainer} initial="hidden" animate="show">
                 <AnimatePresence mode="popLayout">
                   {otherNotes.map((note) => (
                     <NoteCard
-                      key={note.id}
+                      key={note._id || note.id}
                       note={note}
                       onEdit={handleOpenEditModal}
                       onDelete={deleteNote}
