@@ -289,9 +289,6 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-          {/* Steps / Wellness Widget */}
-          <StepsWidget />
-
           {/* Habits Checklist */}
           <Card className="p-5 border border-white/[0.04]">
             <div className="flex items-center justify-between mb-4">
@@ -457,8 +454,10 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Right Column: Agenda + Quick Stats */}
+        {/* Right Column: Agenda + Wellness Telemetry */}
         <div className="lg:col-span-3 space-y-5">
+          {/* Steps / Wellness Widget */}
+          <StepsWidget />
 
           {/* Today's Agenda */}
           <Card className="p-5 border border-white/[0.04]">
@@ -511,49 +510,8 @@ export default function DashboardPage() {
               )}
             </div>
           </Card>
-
-          {/* Streak Card */}
-          <Card hover className="p-4 border border-white/[0.04] relative overflow-hidden group">
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
-            <div className="flex items-center justify-between relative z-10">
-              <div>
-                <p className="text-2xl font-extrabold text-amber-400 tracking-tight">{bestStreak} <span className="text-sm font-bold">days</span></p>
-                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Best Active Streak</p>
-              </div>
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
-                <HiOutlineFire className="h-5 w-5" />
-              </div>
-            </div>
-          </Card>
-
-          {/* Focus Time Card */}
-          <Card hover className="p-4 border border-white/[0.04] relative overflow-hidden group">
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
-            <div className="flex items-center justify-between relative z-10">
-              <div>
-                <p className="text-2xl font-extrabold text-cyan-400 tracking-tight">18.5 <span className="text-sm font-bold">hrs</span></p>
-                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Weekly Focus Time</p>
-              </div>
-              <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-                <HiOutlineClock className="h-5 w-5" />
-              </div>
-            </div>
-          </Card>
-
-          {/* Total Completed */}
-          <Card hover className="p-4 border border-white/[0.04] relative overflow-hidden group">
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
-            <div className="flex items-center justify-between relative z-10">
-              <div>
-                <p className="text-2xl font-extrabold text-orange-400 tracking-tight">{completedCount}</p>
-                <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mt-0.5">Tasks Completed</p>
-              </div>
-              <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400">
-                <HiOutlineClipboardList className="h-5 w-5" />
-              </div>
-            </div>
-          </Card>
         </div>
+
       </div>
     </motion.div>
   );
