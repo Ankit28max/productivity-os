@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const auth = require('../middleware/auth');
 
-const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const BASE_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
 
 const getApiKey = () => {
   return process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
