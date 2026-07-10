@@ -37,7 +37,7 @@ export default function StepsWidget() {
   return (
     <Card
       variant="default"
-      className="flex flex-col h-full hover:border-white/10 group relative border border-white/[0.04] overflow-hidden justify-between card-tilt"
+      className="flex flex-col hover:border-white/10 group relative border border-white/[0.04] overflow-hidden card-tilt"
       glow="orange"
     >
       <div>
